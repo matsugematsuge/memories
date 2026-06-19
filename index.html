@@ -720,8 +720,9 @@ async function bgmFadeTo(src, duration = 700) {
   await bgmFadeIn(next, duration);
 }
 
-function startBgm() { bgmFadeTo('assets/room_bg.mp3'); }
-function stopBgm()  { bgmFadeTo(null); }
+function startBgm()      { bgmFadeTo('assets/room_bg.mp3'); }
+function startTitleBgm() { bgmFadeTo('assets/title_bg.mp3', 1200); }
+function stopBgm()       { bgmFadeTo(null); }
 
 // ═══════════════════════════════════════════════
 // CLOCK
@@ -1483,6 +1484,7 @@ function showTitle(){
   document.getElementById('ep-select').style.display = 'none';
   scr.classList.remove('hide');
   startTitleGlow();
+  startTitleBgm();
 }
 function hideTitle(){
   document.getElementById('title-screen').classList.add('hide');
@@ -1503,8 +1505,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('click',    bootAudio, { once:true });
-  document.addEventListener('touchstart', bootAudio, { once:true });
+
+  // 初回ジェスチャーで音声を起こす。タイトル表示中（メニュー以外をタップ）ならタイトルBGM開始
+  function firstGesture(e){
+    bootAudio();
+    const t = e && e.target;
+    const onMenu = t && (t.classList.contains('tmenu') || t.classList.contains('cbtn'));
+    const titleVisible = !document.getElementById('title-screen').classList.contains('hide');
+    if (titleVisible && !onMenu) startTitleBgm();
+  }
+  document.addEventListener('click',      firstGesture, { once:true });
+  document.addEventListener('touchstart', firstGesture, { once:true });
 
   document.getElementById('app').addEventListener('click', e=>{
     bootAudio();   // タップ毎に音声を起こす（モバイルのsuspended対策）
