@@ -690,6 +690,38 @@ function beep() {
   } catch(e) {}
 }
 
+// 雨のノイズ（タイトル用・フィルタしたホワイトノイズのループ）
+let rainSrc = null, rainGain = null;
+function startRain() {
+  if (!AC || rainSrc) return;
+  try {
+    const len = AC.sampleRate * 2;
+    const buf = AC.createBuffer(1, len, AC.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = AC.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const hp = AC.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 600;
+    const lp = AC.createBiquadFilter();
+    lp.type = 'lowpass';  lp.frequency.value = 3200;
+    rainGain = AC.createGain(); rainGain.gain.value = 0;
+    src.connect(hp); hp.connect(lp); lp.connect(rainGain); rainGain.connect(AC.destination);
+    src.start();
+    rainSrc = src;
+    rainGain.gain.linearRampToValueAtTime(0.035, AC.currentTime + 2.5);  // ゆっくり立ち上げ
+  } catch(e) {}
+}
+function stopRain() {
+  if (!rainSrc) return;
+  try {
+    const s = rainSrc;
+    rainGain.gain.linearRampToValueAtTime(0, AC.currentTime + 1.5);
+    setTimeout(() => { try { s.stop(); } catch(e) {} }, 1700);
+  } catch(e) {}
+  rainSrc = null;
+}
+
 // ═══════════════════════════════════════════════
 // BGM
 // ═══════════════════════════════════════════════
@@ -1424,6 +1456,7 @@ const EPISODES = MANIFEST.map(m => window[m.fn]);
 
 async function runFrom(idx){
   if (idx < 0 || idx >= EPISODES.length) idx = 0;
+  stopRain();       // タイトルの雨音を止める
   startBgm(2800);   // タイトル→ゲームはゆっくりフェード
   T.clear(); Scene.clearText(); Scene.set('IDLE');
   for (let i = idx; i < EPISODES.length; i++){
@@ -1529,6 +1562,7 @@ function showTitle(){
     void menu.offsetWidth;   // リフローを挟んでトランジションを効かせる
     menu.style.opacity = '1';
     startTitleBgm();
+    startRain();
   });
 }
 function hideTitle(){
