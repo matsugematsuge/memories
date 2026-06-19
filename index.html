@@ -1047,6 +1047,19 @@ const Scene = (() => {
 })();
 
 // ═══════════════════════════════════════════════
+// MEMORY LINK HELPERS
+// ═══════════════════════════════════════════════
+async function msys(text, color) {
+  await Scene.addText(text, color || '#ffaa00', 1);
+}
+async function mlog(text) {
+  await Scene.addText(text, '#44ff88', 2);
+}
+async function mwarm(text) {
+  await Scene.addText(text, '#c8a060', 1);
+}
+
+// ═══════════════════════════════════════════════
 // GLITCH OVERLAY (DOM bars)
 // ═══════════════════════════════════════════════
 function linkGlitch() {
