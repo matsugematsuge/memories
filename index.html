@@ -464,12 +464,22 @@ body {
   margin-bottom: 52px;
   will-change: opacity;
 }
+#title-tap {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: var(--bright);
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(0,255,85,0.6);
+  animation: fade 1.4s ease infinite;
+}
+#title-tap.hide { display: none; }
 #title-menu {
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
 }
+#title-menu.hide { display: none; }
 .tmenu {
   font-family: 'DotGothic16', monospace;
   font-size: 17px;
@@ -584,6 +594,7 @@ body {
     <canvas id="rain-cvs"></canvas>
     <div id="title-content">
       <div id="title-logo">MEMORIES</div>
+      <div id="title-tap">--- TAP ---</div>
       <div id="title-menu">
         <button class="tmenu" data-act="new">最初から</button>
         <button class="tmenu" data-act="continue">つづきから</button>
@@ -667,7 +678,7 @@ function zap() {
 // ═══════════════════════════════════════════════
 // BGM
 // ═══════════════════════════════════════════════
-const BGM_VOL = 0.35;
+const BGM_VOL = 0.70;
 let bgmCurrent = null;
 let bgmFadeTimer = null;
 
@@ -1386,6 +1397,9 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   scroll.style.transition = '';
   scroll.style.opacity = '1';
   Scene.clearText();
+
+  // 次のエピソードへ向けてBGMを店内へ戻す
+  bgmFadeTo('assets/room_bg.mp3');
 }
 
 // ═══════════════════════════════════════════════
@@ -1482,9 +1496,21 @@ function showTitle(){
   cont.style.display = (loadProgress() === null) ? 'none' : '';
   document.getElementById('title-menu').style.display = '';
   document.getElementById('ep-select').style.display = 'none';
+  // TAPゲート状態にリセット
+  document.getElementById('title-tap').classList.remove('hide');
+  document.getElementById('title-menu').classList.add('hide');
   scr.classList.remove('hide');
   startTitleGlow();
-  startTitleBgm();
+
+  // TAPで音声起動＋メニュー表示（一度きり）
+  scr.addEventListener('click', function onTap(e){
+    if (e.target.classList.contains('tmenu')) return;
+    scr.removeEventListener('click', onTap);
+    bootAudio();
+    document.getElementById('title-tap').classList.add('hide');
+    document.getElementById('title-menu').classList.remove('hide');
+    startTitleBgm();
+  });
 }
 function hideTitle(){
   document.getElementById('title-screen').classList.add('hide');
@@ -1506,16 +1532,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // 初回ジェスチャーで音声を起こす。タイトル表示中（メニュー以外をタップ）ならタイトルBGM開始
-  function firstGesture(e){
-    bootAudio();
-    const t = e && e.target;
-    const onMenu = t && (t.classList.contains('tmenu') || t.classList.contains('cbtn'));
-    const titleVisible = !document.getElementById('title-screen').classList.contains('hide');
-    if (titleVisible && !onMenu) startTitleBgm();
-  }
-  document.addEventListener('click',      firstGesture, { once:true });
-  document.addEventListener('touchstart', firstGesture, { once:true });
+  // 初回ジェスチャーで音声を起こす（タイトルBGMはshowTitleのTAP処理が担当）
+  document.addEventListener('click',      bootAudio, { once:true });
+  document.addEventListener('touchstart', bootAudio, { once:true });
 
   document.getElementById('app').addEventListener('click', e=>{
     bootAudio();   // タップ毎に音声を起こす（モバイルのsuspended対策）
