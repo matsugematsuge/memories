@@ -129,13 +129,8 @@ body {
   transition: color 0.15s, border-color 0.15s, opacity 0.15s;
 }
 .atgl.on  { color: var(--green); border-color: var(--mid); }
-.atgl.off { color: #1a281a; border-color: #0a120a; opacity: 0.4; }
+.atgl.off { color: var(--mid); border-color: var(--dim); text-decoration: line-through; }
 
-#clk {
-  font-size: 11px;
-  color: var(--mid);
-  flex-shrink: 0;
-}
 
 /* ── SCENE AREA ──────────────────────────────── */
 #scene-wrap {
@@ -558,8 +553,6 @@ body {
       <button id="btn-bgm" class="atgl on">BGM</button>
       <button id="btn-se"  class="atgl on">SE</button>
     </div>
-    <span class="si sep">|</span>
-    <span class="si" id="clk">--:--</span>
   </div>
 
   <!-- SCENE -->
@@ -821,20 +814,6 @@ function startBgm(dur)   { bgmFadeTo('assets/room_bg.mp3', dur || 700); }
 function startTitleBgm() { bgmFadeTo('assets/title_bg.mp3', 1200); }
 function stopBgm()       { bgmFadeTo(null); }
 
-// ═══════════════════════════════════════════════
-// CLOCK
-// ═══════════════════════════════════════════════
-function startClock() {
-  const el = document.getElementById('clk');
-  const up = () => {
-    const n = new Date();
-    el.textContent =
-      String(n.getHours()).padStart(2,'0') + ':' +
-      String(n.getMinutes()).padStart(2,'0') + ':' +
-      String(n.getSeconds()).padStart(2,'0');
-  };
-  up(); setInterval(up, 1000);
-}
 
 
 function linkOn() {
@@ -1603,7 +1582,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   });
 
-  startClock();
   initRain();
   showTitle();
 
