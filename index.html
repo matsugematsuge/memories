@@ -402,7 +402,7 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 1;
-  transition: opacity 1s ease;
+  transition: opacity 3s ease;
 }
 #title-screen.hide { opacity: 0; pointer-events: none; }
 #title-screen::after {
@@ -676,6 +676,20 @@ function zap() {
   } catch(e) {}
 }
 
+// メニュー選択音「ピッ」
+function beep() {
+  if (!AC) return;
+  try {
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = 'square';
+    o.frequency.setValueAtTime(1200, AC.currentTime);
+    g.gain.setValueAtTime(0.08, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 0.10);
+    o.start(); o.stop(AC.currentTime + 0.10);
+  } catch(e) {}
+}
+
 // ═══════════════════════════════════════════════
 // BGM
 // ═══════════════════════════════════════════════
@@ -732,7 +746,7 @@ async function bgmFadeTo(src, duration = 700) {
   await bgmFadeIn(next, duration);
 }
 
-function startBgm()      { bgmFadeTo('assets/room_bg.mp3'); }
+function startBgm(dur)   { bgmFadeTo('assets/room_bg.mp3', dur || 700); }
 function startTitleBgm() { bgmFadeTo('assets/title_bg.mp3', 1200); }
 function stopBgm()       { bgmFadeTo(null); }
 
@@ -1410,7 +1424,7 @@ const EPISODES = MANIFEST.map(m => window[m.fn]);
 
 async function runFrom(idx){
   if (idx < 0 || idx >= EPISODES.length) idx = 0;
-  startBgm();
+  startBgm(2800);   // タイトル→ゲームはゆっくりフェード
   T.clear(); Scene.clearText(); Scene.set('IDLE');
   for (let i = idx; i < EPISODES.length; i++){
     saveProgress(i);
@@ -1551,6 +1565,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.querySelectorAll('.tmenu').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       bootAudio();
+      beep();   // メニュー選択音
       // エピソード直接選択
       if (btn.dataset.ep !== undefined) {
         hideTitle();
