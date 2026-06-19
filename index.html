@@ -1,0 +1,1343 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MEMORIES</title>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg: #020502;
+  --green: #00cc33;
+  --bright: #00ff55;
+  --dim: #002a0a;
+  --mid: #006622;
+  --amber: #ffaa00;
+  --red: #ff2244;
+  --white: #aabcaa;
+  --npc: #c8a060;
+  --border: #081408;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: 'DotGothic16', 'Press Start 2P', monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* CRT scanlines */
+#app::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* ── STATUS HEADER ─────────────────────────────── */
+#hdr {
+  flex-shrink: 0;
+  height: 42px;
+  background: #000;
+  border-bottom: 1px solid var(--dim);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.si {
+  font-size: 10px;
+  color: var(--mid);
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+.si.bright { color: var(--bright); }
+.si.amber  { color: var(--amber); }
+.si.sep    { color: var(--dim); }
+
+#batt {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+#batt-bar {
+  width: 26px;
+  height: 7px;
+  border: 1px solid var(--mid);
+  position: relative;
+}
+#batt-fill {
+  position: absolute;
+  inset: 1px;
+  right: auto;
+  width: 87%;
+  background: var(--green);
+}
+
+#pulse-wrap {
+  flex: 1;
+  height: 28px;
+  display: none;
+  position: relative;
+}
+#pulse-wrap.on { display: block; }
+#pulse-cvs {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+#clk {
+  font-size: 11px;
+  color: var(--mid);
+  flex-shrink: 0;
+}
+
+/* ── SCENE AREA ──────────────────────────────── */
+#scene-wrap {
+  flex-shrink: 0;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: flex-start;
+  background: #000;
+  padding: 0 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+#cvs-overlay {
+  position: absolute;
+  top: 0; left: 8px; right: 8px; bottom: 0;
+  padding: 5px 7px;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  z-index: 10;
+}
+/* エピソード切り替え用の黒フェード（canvasの上・テキストオーバーレイの下） */
+#scene-fade {
+  position: absolute;
+  top: 0; left: 8px; right: 8px; bottom: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.6s ease;
+  z-index: 5;
+}
+.cvo-line {
+  flex-shrink: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: normal;
+  word-break: break-all;
+  text-shadow: 0 0 4px currentColor;
+}
+.cvo-line.jp {
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: normal;
+}
+.cvo-line.jp.big { font-size: 19px; }
+.cvo-line.bg {
+  background: rgba(0,0,0,0.75);
+  padding: 0 3px;
+  display: block;
+}
+
+#scene-cvs {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3/2;
+  max-height: 280px;
+  margin-bottom: -30px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border: 1px solid var(--dim);
+}
+
+/* ── TEXT AREA ───────────────────────────────── */
+#txt-area {
+  flex-shrink: 0;
+  height: min(calc((100vw - 16px) * 2 / 3 + 10px), 290px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0 8px 0;
+  border-left: 2px solid var(--mid);
+  border-right: 2px solid var(--mid);
+}
+
+#tbar-top, #tbar-bot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--mid);
+  padding: 0 4px;
+  gap: 0;
+}
+#tbar-label {
+  color: var(--green);
+  font-size: 8px;
+  white-space: nowrap;
+}
+.tbar-ln {
+  flex: 1;
+  height: 2px;
+  background: var(--mid);
+  margin: 0 1px;
+}
+
+#txt-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 20px;
+  scrollbar-width: none;
+  transition: opacity 1.6s ease;
+}
+#txt-scroll::-webkit-scrollbar { display: none; }
+
+.line {
+  font-size: 16px;
+  font-family: 'DotGothic16', monospace;
+  line-height: 2.4;
+  margin-bottom: 0;
+}
+.line.narr  { color: var(--white); }
+.line.sys   { color: var(--amber); font-size: 12px; font-family: 'Press Start 2P', monospace; }
+.line.mem   { color: #44ff88; font-size: 15px; }
+.line.mem::before { content: '> '; color: var(--mid); font-family: 'Press Start 2P', monospace; font-size: 10px; }
+.line.dlg   { color: var(--bright); }
+.line.npc   { color: var(--npc); }
+.line.err   { color: var(--red); font-size: 11px; font-family: 'Press Start 2P', monospace; }
+.line.sp    { height: 10px; }
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 13px;
+  background: var(--green);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: cur 0.8s step-end infinite;
+}
+@keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── TAP HINT & CHOICES ─────────────────────── */
+@keyframes fade { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+#choices {
+  flex-shrink: 0;
+  display: none;
+  padding: 10px 8px;
+  gap: 8px;
+  margin: 0 8px;
+  border-left: 2px solid var(--mid);
+  border-right: 2px solid var(--mid);
+  border-top: 1px solid var(--dim);
+}
+#choices.on { display: flex; }
+
+.cbtn {
+  flex: 1;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 12px 4px;
+  border: 1px solid;
+  background: transparent;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.1s;
+}
+.cbtn:active { transform: scale(0.97); }
+.cbtn.er { color: var(--red);   border-color: var(--red); }
+.cbtn.ke { color: var(--green); border-color: var(--green); }
+.cbtn.er:hover { background: rgba(255,34,68,0.12); }
+.cbtn.ke:hover { background: rgba(0,204,51,0.12); }
+
+/* ── GLITCH OVERLAY ──────────────────────────── */
+#glitch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+.glitch-bar {
+  position: absolute;
+  left: 0; right: 0;
+  background: rgba(0,255,60,0.07);
+  transform: translateX(0);
+}
+
+/* ── TITLE SCREEN ────────────────────────────── */
+#title-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 180;            /* コンテンツの上・スキャンライン(200)の下 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+#title-screen.hide { opacity: 0; pointer-events: none; }
+#title-bg {
+  position: absolute;
+  inset: 0;
+  background-color: #020502;
+  /* 1枚目=本画像(後で生成) / 2枚目=二層都市風の仮グラデーション */
+  background-image:
+    url('assets/scene_TITLE.png'),
+    linear-gradient(to bottom,
+      #0c2030 0%, #103028 14%, #07140d 34%, #030806 60%, #010301 100%);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  image-rendering: pixelated;
+}
+#title-bg::after {  /* 上層のかすかな光のにじみ */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 60% at 50% 8%, rgba(0,255,90,0.10), transparent 60%);
+  pointer-events: none;
+}
+#rain-cvs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+  opacity: 0.7;
+}
+#title-content {
+  position: relative;
+  text-align: center;
+  padding: 0 20px;
+}
+#title-logo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(34px, 10.5vw, 44px);
+  letter-spacing: 1px;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--bright);
+  text-shadow: 0 0 8px rgba(0,255,85,0.7), 0 0 18px rgba(0,255,85,0.35);
+  margin-bottom: 52px;
+  will-change: opacity;
+}
+#title-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+.tmenu {
+  font-family: 'DotGothic16', monospace;
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: var(--white);
+  background: rgba(0,10,4,0.55);
+  border: 1px solid var(--mid);
+  padding: 10px 40px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.tmenu:hover, .tmenu.sel {
+  color: var(--bright);
+  border-color: var(--bright);
+  background: rgba(0,40,16,0.6);
+  box-shadow: 0 0 10px rgba(0,255,85,0.25);
+}
+.tmenu:active { transform: scale(0.97); }
+.tmenu.disabled {
+  color: #2a3a2a;
+  border-color: #16241a;
+  background: rgba(0,8,4,0.4);
+  cursor: default;
+  pointer-events: none;
+  text-shadow: none;
+  box-shadow: none;
+}
+#ep-select {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.ep-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 55vh;
+  overflow-y: auto;
+  width: 100%;
+  align-items: center;
+}
+.tmenu.ep-btn {
+  font-size: 14px;
+  padding: 7px 24px;
+  letter-spacing: 1px;
+  min-width: 220px;
+  text-align: left;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="glitch"></div>
+
+  <!-- STATUS HEADER -->
+  <div id="hdr">
+    <span class="si">OS:<span class="bright">VER.1.88</span></span>
+    <span class="si sep">|</span>
+    <span class="si" id="batt">
+      <span id="batt-bar"><span id="batt-fill"></span></span>
+      <span id="batt-pct"> 87%</span>
+    </span>
+    <span class="si sep">|</span>
+    <span class="si" id="sig"><span class="bright">[ONLINE]</span></span>
+    <div id="pulse-wrap"><canvas id="pulse-cvs"></canvas></div>
+    <span class="si sep" id="clk-sep">|</span>
+    <span class="si" id="clk">--:--</span>
+  </div>
+
+  <!-- SCENE -->
+  <div id="scene-wrap">
+    <canvas id="scene-cvs" width="192" height="128"></canvas>
+    <div id="scene-fade"></div>
+    <div id="cvs-overlay"></div>
+  </div>
+
+  <!-- TEXT -->
+  <div id="txt-area">
+    <div id="tbar-top">
+      <span>┌──[</span><span id="tbar-label">&nbsp;SYS::LOG&nbsp;</span><span>]</span>
+      <div class="tbar-ln"></div>
+      <span>──┐</span>
+    </div>
+    <div id="txt-scroll"></div>
+    <div id="tbar-bot">
+      <span>└</span>
+      <div class="tbar-ln"></div>
+      <span>──┘</span>
+    </div>
+  </div>
+
+  <!-- CHOICES (outside text area) -->
+  <div id="choices">
+    <button class="cbtn er" onclick="choose('ERASE')">[ ERASE ]</button>
+    <button class="cbtn ke" onclick="choose('KEEP')">[ KEEP ]</button>
+  </div>
+
+  <!-- TITLE SCREEN -->
+  <div id="title-screen">
+    <div id="title-bg"></div>
+    <canvas id="rain-cvs"></canvas>
+    <div id="title-content">
+      <div id="title-logo">MEMORIES</div>
+      <div id="title-menu">
+        <button class="tmenu" data-act="new">最初から</button>
+        <button class="tmenu" data-act="continue">つづきから</button>
+        <button class="tmenu" data-act="epselect">エピソード選択</button>
+      </div>
+      <div id="ep-select">
+        <div class="ep-list" id="ep-list"></div>
+        <button class="tmenu" data-act="back">← もどる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="episodes/manifest.js"></script>
+<script src="episodes/ep0.js"></script>
+<script src="episodes/ep1.js"></script>
+<script src="episodes/ep2.js"></script>
+<script src="episodes/ep3.js"></script>
+<script src="episodes/ep4.js"></script>
+<script src="episodes/ep5.js"></script>
+<script src="episodes/ep6.js"></script>
+<script src="episodes/ep7.js"></script>
+<script src="episodes/ep8.js"></script>
+<script src="episodes/ep9.js"></script>
+<script src="episodes/ep10.js"></script>
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════════
+let AC = null;
+
+function bootAudio() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+}
+
+function tick(freq) {
+  if (!AC) return;
+  try {
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = 'square';
+    o.frequency.value = (freq || 880) + (Math.random()*120 - 60);
+    g.gain.setValueAtTime(0.022, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 0.04);
+    o.start(); o.stop(AC.currentTime + 0.04);
+  } catch(e) {}
+}
+
+function knock() {
+  if (!AC) return;
+  try {
+    const len = AC.sampleRate * 0.12;
+    const buf = AC.createBuffer(1, len, AC.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++)
+      d[i] = (Math.random()*2-1) * Math.exp(-i / (AC.sampleRate * 0.025));
+    const s = AC.createBufferSource(), g = AC.createGain();
+    s.buffer = buf; s.connect(g); g.connect(AC.destination);
+    g.gain.value = 0.5; s.start();
+  } catch(e) {}
+}
+
+function zap() {
+  if (!AC) return;
+  try {
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(150, AC.currentTime);
+    o.frequency.exponentialRampToValueAtTime(900, AC.currentTime + 0.08);
+    o.frequency.exponentialRampToValueAtTime(80,  AC.currentTime + 0.22);
+    g.gain.setValueAtTime(0.06, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 0.22);
+    o.start(); o.stop(AC.currentTime + 0.22);
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════
+// BGM
+// ═══════════════════════════════════════════════
+let bgm = null;
+
+function startBgm() {
+  if (!bgm) {
+    bgm = new Audio('assets/room_bg.wav');
+    bgm.loop = true;
+    bgm.volume = 0.35;
+  }
+  bgm.play().catch(() => {});
+}
+
+function stopBgm() {
+  if (!bgm) return;
+  bgm.pause();
+  bgm.currentTime = 0;
+}
+
+// ═══════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════
+function startClock() {
+  const el = document.getElementById('clk');
+  const up = () => {
+    const n = new Date();
+    el.textContent =
+      String(n.getHours()).padStart(2,'0') + ':' +
+      String(n.getMinutes()).padStart(2,'0') + ':' +
+      String(n.getSeconds()).padStart(2,'0');
+  };
+  up(); setInterval(up, 1000);
+}
+
+// ═══════════════════════════════════════════════
+// PULSE
+// ═══════════════════════════════════════════════
+let pulseOn = false, pulsePhase = 0, pulseData = [];
+let pulseEnergy = 0, pulseClock = 0, pulseNext = 20;
+
+function initPulse() {
+  const wrap = document.getElementById('pulse-wrap');
+  const cvs  = document.getElementById('pulse-cvs');
+  const ctx  = cvs.getContext('2d');
+
+  function resize() {
+    cvs.width  = wrap.clientWidth  || 100;
+    cvs.height = wrap.clientHeight || 28;
+  }
+  resize();
+  new ResizeObserver(resize).observe(wrap);
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    if (!pulseOn) { ctx.clearRect(0,0,cvs.width,cvs.height); return; }
+    const W = cvs.width, H = cvs.height;
+    ctx.clearRect(0,0,W,H);
+
+    pulseClock++;
+    pulseEnergy *= 0.84;
+    if (pulseClock >= pulseNext) {
+      pulseClock = 0;
+      pulseNext = 22 + Math.random() * 60;
+      pulseEnergy = 0.65 + Math.random() * 0.7;
+    }
+    const spike = pulseEnergy * Math.sin(pulseClock * 1.5) * Math.exp(-pulseClock * 0.11);
+    pulseData.push(
+      spike +
+      Math.sin(pulsePhase * 0.11) * 0.07 +
+      (Math.random() - 0.5) * 0.04
+    );
+    if (pulseData.length > W) pulseData.shift();
+    pulsePhase += 0.22;
+
+    ctx.strokeStyle = '#00ff55';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < pulseData.length; i++) {
+      const x = i, y = H/2 - pulseData[i] * (H/2 - 2);
+      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  })();
+}
+
+function linkOn() {
+  pulseOn = true; pulseData = []; pulsePhase = 0;
+  pulseEnergy = 0; pulseClock = 0; pulseNext = 20;
+  document.getElementById('pulse-wrap').classList.add('on');
+  document.getElementById('clk-sep').style.display = 'none';
+  document.getElementById('clk').style.display = 'none';
+  document.getElementById('sig').innerHTML = '<span class="amber">[LINKED]</span>';
+}
+function linkOff() {
+  pulseOn = false;
+  document.getElementById('pulse-wrap').classList.remove('on');
+  document.getElementById('clk-sep').style.display = '';
+  document.getElementById('clk').style.display = '';
+  document.getElementById('sig').innerHTML = '<span class="bright">[ONLINE]</span>';
+}
+
+// ═══════════════════════════════════════════════
+// SCENE RENDERER (pixel canvas 160×128)
+// ═══════════════════════════════════════════════
+const Scene = (() => {
+  const cvs = document.getElementById('scene-cvs');
+  const cx  = cvs.getContext('2d');
+  const W = 192, H = 128;
+  let scene = 'IDLE', frame = 0, smokes = [];
+  let fkBright = 1, fkSeq = null, fkIdle = 0;
+  let fadeFrom = null, fadeAlpha = 1;
+  const FADE_DUR = 75;
+
+  function tickFlicker() {
+    if (fkSeq && fkSeq.length > 0) {
+      fkBright = fkSeq.shift();
+    } else {
+      fkSeq = null; fkBright = 1; fkIdle++;
+      if (fkIdle > 500 && Math.random() < 0.002) {
+        fkIdle = 0;
+        const dim = Array.from({length:100}, (_,i) => 1 - 0.7*(i/99));
+        const rec = Array.from({length:100}, (_,i) => 0.3 + 0.7*(i/99));
+        fkSeq = [...dim, ...rec];
+      }
+    }
+  }
+  const bgImg = {}; // scene_id -> HTMLImageElement (loaded from assets/)
+
+  // 生成した画像を assets/scene_IDLE.png 等に置くと自動で使われる
+  ['IDLE','DOOR','EYE','CHIP'].forEach(id => {
+    const img = new Image();
+    img.onload = () => { bgImg[id] = img; };
+    img.src = `assets/scene_${id}.png`;
+  });
+
+  const fill = (x,y,w,h,c) => { cx.fillStyle=c; cx.fillRect(x|0,y|0,w,h); };
+  const line = (x,y,l,c,vert) => vert
+    ? fill(x,y,1,l,c)
+    : fill(x,y,l,1,c);
+  const px = (x,y,c) => fill(x,y,1,1,c);
+
+  function smoke(x,y) {
+    if (smokes.length < 50) smokes.push({
+      x: x+(Math.random()-0.5)*2, y,
+      vx:(Math.random()-0.5)*0.06,
+      vy:-(0.09+Math.random()*0.11),
+      life:1,
+      dec:0.004+Math.random()*0.003,
+      sz:1+Math.floor(Math.random()*2),
+      grow:0.015+Math.random()*0.015,
+    });
+  }
+  function updSmoke() {
+    smokes = smokes.filter(p=>p.life>0);
+    smokes.forEach(p=>{
+      p.x += p.vx;
+      p.y += p.vy;
+      p.sz += p.grow;
+      p.life -= p.dec;
+    });
+  }
+  function drawSmoke() {
+    smokes.forEach(p=>{
+      const g = Math.floor(40+p.life*80);
+      const sz = Math.max(1, Math.floor(p.sz));
+      cx.fillStyle = `rgba(${g},${g+10},${g},${p.life*0.6})`;
+      cx.fillRect(Math.floor(p.x - sz/2), Math.floor(p.y - sz/2), sz, sz);
+    });
+  }
+
+  // ── SCENES ──────────────────────────
+  function drawIDLE() {
+    if (bgImg['IDLE']) {
+      cx.drawImage(bgImg['IDLE'], 0, 0, W, H);
+      if(frame%4===0) { smoke(58,101); if(Math.random()<0.5) smoke(58,101); }
+      updSmoke(); drawSmoke();
+      tickFlicker();
+      if (fkBright < 1) { cx.fillStyle=`rgba(0,0,0,${(1-fkBright)*0.88})`; cx.fillRect(0,0,W,H); }
+      return;
+    }
+    fill(0,0,W,H,'#000');
+    // floor
+    fill(0,100,W,28,'#020602');
+    line(0,100,W,'#071207');
+    // desk
+    fill(18,84,124,5,'#060e06'); fill(18,89,5,39,'#040a04'); fill(137,89,5,39,'#040a04');
+    // terminal on desk
+    fill(52,62,56,25,'#000'); fill(51,61,58,27,'#09190a');
+    // screen glow
+    cx.fillStyle='rgba(0,90,25,0.1)'; cx.fillRect(52,62,56,25);
+    // scanlines on screen
+    for(let y=63;y<86;y+=2) line(52,y,56,'rgba(0,60,15,0.28)');
+    // text on screen
+    line(54,65,12,'#003a0e'); line(54,68,20,'#003a0e'); line(54,71,8,'#003a0e');
+    // blinking cursor on screen
+    if(frame%60<30) fill(54+13,74,3,5,'#009928');
+    // lamp
+    fill(72,0,16,3,'#091209'); line(80,0,22,'#091209',true);
+    fill(68,20,24,5,'#091209');
+    const lg=cx.createRadialGradient(80,25,0,80,25,38);
+    lg.addColorStop(0,'rgba(0,70,18,0.22)'); lg.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=lg; cx.fillRect(42,10,76,72);
+    // pipe
+    line(152,28,100,'#04090a',true); line(153,28,100,'#020604',true);
+    // smoke
+    if(frame%4===0) { smoke(58,101); if(Math.random()<0.5) smoke(58,101); }
+    updSmoke(); drawSmoke();
+    // cig
+    fill(86,82,9,2,'#1e1008');
+    if(frame%38<28) px(94,82,'#bb3800');
+  }
+
+  function drawDOOR() {
+    fill(0,0,W,H,'#000');
+    fill(0,108,W,20,'#030603'); line(0,108,W,'#09160a');
+    // frame
+    fill(33,16,94,105,'#020802');
+    fill(33,16,94,4,'#091509'); fill(33,16,4,105,'#091509'); fill(123,16,4,105,'#091509');
+    // door
+    fill(37,20,86,96,'#030a03');
+    // panels
+    [[40,24,36,40],[40,70,36,40],[82,24,36,40],[82,70,36,40]]
+      .forEach(([x,y,w,h])=>fill(x,y,w,h,'#050d05'));
+    // handle
+    fill(110,68,4,14,'#092009'); px(112,75,'#005020');
+    // light under door
+    const li=0.12+Math.sin(frame*0.05)*0.03;
+    cx.fillStyle=`rgba(0,${Math.floor(110*li)},${Math.floor(28*li)},${li})`;
+    cx.fillRect(37,114,86,2);
+  }
+
+  function drawEYE() {
+    fill(0,0,W,H,'#000');
+    fill(28,0,104,128,'#010301');
+    const ecx=80, ecy=66, R=27;
+    // mechanical ring
+    cx.strokeStyle='#092009'; cx.lineWidth=3;
+    cx.beginPath(); cx.arc(ecx,ecy,R+5,0,Math.PI*2); cx.stroke();
+    // black socket
+    cx.fillStyle='#000'; cx.beginPath(); cx.arc(ecx,ecy,R,0,Math.PI*2); cx.fill();
+    // iris glow
+    const ig=0.28+Math.sin(frame*0.055)*0.14;
+    cx.strokeStyle=`rgba(0,${Math.floor(140*ig+60)},${Math.floor(55*ig+20)},${ig+0.1})`;
+    cx.lineWidth=1;
+    for(let a=0;a<Math.PI*2;a+=Math.PI/6){
+      const [x1,y1]=[ecx+Math.cos(a)*8, ecy+Math.sin(a)*8];
+      const [x2,y2]=[ecx+Math.cos(a)*(R-3), ecy+Math.sin(a)*(R-3)];
+      cx.beginPath(); cx.moveTo(x1,y1); cx.lineTo(x2,y2); cx.stroke();
+    }
+    for(let r=9;r<R;r+=7){
+      const alpha=(ig*0.5)*(1-r/R);
+      cx.strokeStyle=`rgba(0,${Math.floor(200*ig)},${Math.floor(80*ig)},${alpha})`;
+      cx.beginPath(); cx.arc(ecx,ecy,r,0,Math.PI*2); cx.stroke();
+    }
+    // pupil
+    cx.fillStyle='#000'; cx.beginPath(); cx.arc(ecx,ecy,6,0,Math.PI*2); cx.fill();
+    const pg=0.55+Math.sin(frame*0.08)*0.2;
+    cx.fillStyle=`rgba(0,${Math.floor(255*pg)},${Math.floor(75*pg)},${pg*0.85})`;
+    cx.beginPath(); cx.arc(ecx,ecy,3,0,Math.PI*2); cx.fill();
+    // scan line
+    const sy=ecy-R+((frame*1.4)%(R*2));
+    if(sy>ecy-R&&sy<ecy+R){
+      const dx=Math.sqrt(Math.max(0,R*R-(sy-ecy)**2));
+      cx.fillStyle='rgba(0,255,80,0.12)'; cx.fillRect(ecx-dx,sy,dx*2,1);
+    }
+    // bolts
+    [0,Math.PI/2,Math.PI,Math.PI*3/2].forEach(a=>{
+      const bx=ecx+Math.cos(a)*(R+8), by=ecy+Math.sin(a)*(R+8);
+      fill(bx-2,by-2,4,4,'#0a2010'); px(bx,by,'#004d1a');
+    });
+  }
+
+  function drawCHIP() {
+    fill(0,0,W,H,'#000');
+    fill(0,88,W,40,'#020602'); line(0,88,W,'#091409');
+    // body
+    const bx=52,by=30,bw=64,bh=50;
+    fill(bx-1,by-1,bw+2,bh+2,'#092009'); fill(bx,by,bw,bh,'#040e04');
+    // label
+    cx.fillStyle='#001e08'; cx.font='5px "Press Start 2P","Courier New",monospace';
+    cx.fillText('MEM-7',bx+6,by+16); cx.fillText('CLASS-A',bx+6,by+28);
+    // damage
+    fill(bx+44,by+5,14,10,'#080200');
+    [0,1,1,2,0].forEach((dy,i)=>{ if(Math.random()<0.7) px(bx+44+i,by+6+dy,'#180500'); });
+    // pins left & right
+    for(let i=0;i<5;i++){
+      fill(bx-8,by+6+i*9,8,3,'#003012');
+      fill(bx+bw,by+6+i*9,8,3,'#003012');
+    }
+    // LED blink
+    const led=frame%70<18;
+    px(bx+54,by+42,led?'#ff4400':'#180800');
+    if(led){ cx.fillStyle='rgba(255,60,0,0.14)'; cx.fillRect(bx+51,by+39,7,7); }
+    // cable
+    line(80,by+bh,88-(by+bh),'#050e05',true);
+    fill(74,84,12,6,'#050e05');
+    // ambient glow
+    const cg=cx.createRadialGradient(bx+bw/2,by+bh/2,0,bx+bw/2,by+bh/2,42);
+    cg.addColorStop(0,'rgba(0,45,15,0.07)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=cg; cx.fillRect(bx-20,by-20,bw+40,bh+40);
+  }
+
+  function drawBOOT() {
+    fill(0,0,W,H,'#000');
+    const p=Math.min(frame/90,1);
+    cx.fillStyle='#002208'; cx.font='5px "Press Start 2P","Courier New",monospace';
+    cx.fillText('INITIALIZING...',16,50);
+    fill(18,62,124,8,'#020e02'); fill(19,63,Math.floor(122*p),6,'#00aa30');
+    cx.fillStyle='#00bb33'; cx.fillText(Math.floor(p*100)+'%',68,82);
+    if(frame%3===0){
+      for(let c=0;c<6;c++){
+        const rx=8+c*26, ry=96+Math.floor(Math.random()*24);
+        cx.fillStyle=`rgba(0,${60+Math.floor(Math.random()*90)},20,0.45)`;
+        cx.fillText(String.fromCharCode(0x30+Math.floor(Math.random()*10)),rx,ry);
+      }
+    }
+  }
+
+  function glitchPass() {
+    for(let i=0;i<6;i++){
+      const gy=Math.floor(Math.random()*H), gh=1+Math.floor(Math.random()*4);
+      const gw=16+Math.floor(Math.random()*55), gx=Math.floor(Math.random()*(W-gw));
+      cx.fillStyle=`rgba(0,255,60,${0.08+Math.random()*0.18})`;
+      cx.fillRect(gx,gy,gw,gh);
+      if(Math.random()<0.35){
+        try{
+          const img=cx.getImageData(gx,gy,gw,gh);
+          cx.putImageData(img,gx+(Math.random()<0.5?-4:4),gy);
+        }catch(e){}
+      }
+    }
+  }
+
+  // ── CANVAS TEXT OVERLAY (DOM-based for crisp rendering) ──
+  const cvsTxt = (() => {
+    const el = document.getElementById('cvs-overlay');
+    const lines = [];
+    let cur = 0, t = 0;
+    let del = null; // 1文字ずつ削除中の状態 { spd, t, cb }
+
+    function waitForTap(curEl, cb) {
+      setTimeout(() => {
+        function onTap(e) {
+          if (e.target.classList.contains('cbtn')) return;
+          curEl.remove();
+          document.getElementById('app').removeEventListener('click', onTap);
+          cb();
+        }
+        document.getElementById('app').addEventListener('click', onTap, { once: true });
+      }, 200);
+    }
+
+    function push(text, color, spd, cb, cls) {
+      const isJp = /[^\x00-\x7F]/.test(text);
+      const div = document.createElement('div');
+      div.className = 'cvo-line bg' + (isJp ? ' jp' : '') + (cls ? ' ' + cls : '');
+      div.style.color = color;
+      if (!isJp) div.style.fontFamily = '"Press Start 2P", monospace';
+      const curEl = document.createElement('span');
+      curEl.className = 'cursor';
+      div.appendChild(curEl);
+      el.appendChild(div);
+      const last = text.trimEnd().slice(-1);
+      const finishCb = (last === '。' || last === '」')
+        ? () => waitForTap(curEl, cb)
+        : () => { curEl.remove(); cb(); };
+      lines.push({ text, spd: spd||1, n: 0, done: false, waiting: false, cb: finishCb, el: div, curEl });
+    }
+
+    function midTap(l) {
+      l.waiting = true;
+      setTimeout(() => {
+        function onTap(e) {
+          if (e.target.classList.contains('cbtn')) return;
+          l.waiting = false;
+          document.getElementById('app').removeEventListener('click', onTap);
+        }
+        document.getElementById('app').addEventListener('click', onTap, { once: true });
+      }, 200);
+    }
+
+    // バックスペース風：末尾の文字から1文字ずつ削除
+    function deleteAll(spd, cb) { del = { spd: spd || 1, t: 0, cb }; }
+
+    function tickDelete() {
+      del.t++;
+      if (del.t < del.spd) return;
+      del.t = 0;
+      let div = el.lastElementChild;
+      while (div && div.textContent.length === 0) { el.removeChild(div); div = el.lastElementChild; }
+      if (!div) {
+        lines.length = 0; cur = 0; t = 0;
+        const cb = del.cb; del = null; if (cb) cb();
+        return;
+      }
+      div.textContent = div.textContent.slice(0, -1);
+      if (div.textContent.length === 0) el.removeChild(div);
+    }
+
+    function cvsTick() {
+      if (del) { tickDelete(); return; }
+      if (cur >= lines.length) return;
+      const l = lines[cur];
+      if (l.done) { cur++; return; }
+      if (l.waiting) return;
+      t++;
+      if (t >= l.spd) {
+        t = 0;
+        l.n++;
+        const ch = l.text[l.n - 1];
+        l.curEl.insertAdjacentText('beforebegin', ch);
+        if (!' 　'.includes(ch)) tick(820 + Math.random() * 160);
+        if (l.n >= l.text.length) {
+          l.done = true;
+          if (l.cb) l.cb();
+          cur++;
+        } else if (ch === '。' || ch === '」') {
+          midTap(l);
+        }
+      }
+    }
+
+    function clear() {
+      lines.length = 0;
+      cur = 0; t = 0;
+      del = null;
+      el.innerHTML = '';
+    }
+
+    return { push, tick: cvsTick, clear, deleteAll };
+  })();
+
+  const isShopScene = id => id === 'IDLE' || id.startsWith('CLIENT_');
+
+  function drawScene(id, alpha) {
+    if (alpha < 1) cx.globalAlpha = alpha;
+    if (bgImg[id]) cx.drawImage(bgImg[id], 0, 0, W, H);
+    else fill(0, 0, W, H, '#000');
+    cx.globalAlpha = 1;
+  }
+
+  ;(function loop(){
+    requestAnimationFrame(loop);
+
+    if (fadeAlpha < 1) {
+      drawScene(fadeFrom, 1);
+      drawScene(scene, fadeAlpha);
+      fadeAlpha = Math.min(1, fadeAlpha + 1 / FADE_DUR);
+    } else {
+      drawScene(scene, 1);
+    }
+
+    if (isShopScene(scene)) {
+      if(frame%4===0) { smoke(58,101); if(Math.random()<0.5) smoke(58,101); }
+      updSmoke(); drawSmoke();
+      tickFlicker();
+      if (fkBright < 1) { cx.fillStyle=`rgba(0,0,0,${(1-fkBright)*0.88})`; cx.fillRect(0,0,W,H); }
+    }
+
+    cvsTxt.tick();
+    frame++;
+  })();
+
+  return {
+    set(id){ fadeFrom=scene; fadeAlpha=0; scene=id; frame=0; smokes=[]; },
+    load(id) {
+      if (bgImg[id]) return Promise.resolve();
+      return new Promise(res => {
+        const img = new Image();
+        img.onload  = () => { bgImg[id] = img; res(); };
+        img.onerror = () => res(); // 画像なくても止まらない
+        img.src = `assets/scene_${id}.png`;
+      });
+    },
+    glitch(){ glitchPass(); },
+    addText(text, color, spd, cls) {
+      return new Promise(r => cvsTxt.push(text, color, spd, r, cls));
+    },
+    clearText() { cvsTxt.clear(); },
+    deleteText(spd) { return new Promise(r => cvsTxt.deleteAll(spd, r)); }
+  };
+})();
+
+// ═══════════════════════════════════════════════
+// GLITCH OVERLAY (DOM bars)
+// ═══════════════════════════════════════════════
+function linkGlitch() {
+  return new Promise(resolve => {
+    const el = document.getElementById('glitch');
+    let b = 0;
+    (function burst() {
+      zap();
+      Scene.glitch();
+      el.innerHTML = '';
+      for (let y = 0; y < 100; y += 1 + Math.floor(Math.random() * 2)) {
+        const d = document.createElement('div');
+        d.className = 'glitch-bar';
+        d.style.top    = y + '%';
+        d.style.height = (1 + Math.floor(Math.random() * 6)) + 'px';
+        d.style.background = Math.random() < 0.25
+          ? `rgba(255,34,68,${0.06 + Math.random()*0.18})`
+          : `rgba(0,255,60,${0.06 + Math.random()*0.22})`;
+        d.style.transform = `translateX(${(Math.random()-0.5)*18}px)`;
+        el.appendChild(d);
+      }
+      setTimeout(() => {
+        el.innerHTML = '';
+        b++;
+        if (b < 3) setTimeout(burst, 18 + Math.floor(Math.random()*22));
+        else resolve();
+      }, 38 + Math.floor(Math.random()*28));
+    })();
+  });
+}
+
+function glitch(ms) {
+  zap();
+  Scene.glitch();
+  const el = document.getElementById('glitch');
+  el.innerHTML = '';
+  const count = 5 + Math.floor(Math.random()*6);
+  for(let i=0;i<count;i++){
+    const b = document.createElement('div');
+    b.className = 'glitch-bar';
+    b.style.top    = Math.floor(Math.random()*100)+'%';
+    b.style.height = (1+Math.floor(Math.random()*5))+'px';
+    b.style.background = Math.random()<0.4 ? 'rgba(255,34,68,0.06)' : 'rgba(0,255,60,0.08)';
+    b.style.transform  = `translateX(${(Math.random()-0.5)*8}px)`;
+    el.appendChild(b);
+  }
+  setTimeout(()=>{ el.innerHTML=''; }, ms||350);
+}
+
+// ═══════════════════════════════════════════════
+// TEXT ENGINE
+// ═══════════════════════════════════════════════
+const T = (() => {
+  const scroll  = document.getElementById('txt-scroll');
+  let typing=false, skip=false, waitTap=false, tapCb=null;
+
+  function addLine(cls){ const d=document.createElement('div'); d.className='line '+(cls||''); scroll.appendChild(d); return d; }
+  function bot(){ const l=scroll.lastElementChild; if(l) l.scrollIntoView({block:'end'}); }
+  const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+
+  async function type(el, text, spd) {
+    typing=true; skip=false;
+    const cur=document.createElement('span'); cur.className='cursor'; el.appendChild(cur);
+    for(let i=0;i<text.length;i++){
+      if(skip){ cur.insertAdjacentText('beforebegin', text.slice(i)); break; }
+      cur.insertAdjacentText('beforebegin',text[i]);
+      if(!' '.includes(text[i])) tick(820+Math.random()*160);
+      bot();
+      let d=spd||70;
+      if('。、！？…'.includes(text[i])) d*=4;
+      else if('「」』』'.includes(text[i])) d*=1.5;
+      await sleep(d);
+      if ((text[i]==='。'||text[i]==='」') && i < text.length-1) {
+        typing=false; waitTap=true;
+        await new Promise(r=>{ tapCb=r; });
+        waitTap=false; typing=true; skip=false;
+      }
+    }
+    typing=false;
+    return cur;
+  }
+
+  return {
+    async say(t,cls,spd){ const l=addLine(cls); const c=await type(l,t,spd); const last=t.trimEnd().slice(-1); if(last==='。'||last==='」') await this.tap(); c.remove(); },
+    async sys(t){  return this.say(t,'sys',38); },
+    async log(t){  return this.say(t,'mem',45); },
+    async inn(t){  return this.say(t); },
+    async dlg(t){  return this.say(t,'dlg',65); },
+    async npc(t){  return this.say(t,'npc',65); },
+    async err(t){  return this.say(t,'err',16); },
+    sp(){ addLine('sp'); },
+    clear(){ scroll.innerHTML=''; },
+    sleep,
+    async tap(){
+      waitTap=true;
+      await new Promise(r=>{ tapCb=r; });
+      waitTap=false;
+    },
+    handleTap(){
+      if(typing){ skip=true; return; }
+      if(waitTap&&tapCb){ const f=tapCb; tapCb=null; f(); }
+    }
+  };
+})();
+
+// ═══════════════════════════════════════════════
+// CHOICE
+// ═══════════════════════════════════════════════
+let choiceCb = null;
+function choose(v){
+  document.getElementById('choices').classList.remove('on');
+  if(choiceCb){ const f=choiceCb; choiceCb=null; f(v); }
+}
+function showChoices(erLabel, keLabel){
+  const c = document.getElementById('choices');
+  c.querySelector('.er').textContent = erLabel || '[ ERASE ]';
+  c.querySelector('.ke').textContent = keLabel || '[ KEEP ]';
+  return new Promise(r=>{ choiceCb=r; c.classList.add('on'); document.getElementById('txt-scroll').scrollTop=99999; });
+}
+
+
+// ═══════════════════════════════════════════════
+// PROGRESS（セーブ）
+// ═══════════════════════════════════════════════
+const SAVE_KEY = 'memories_progress';
+function saveProgress(i){ try{ localStorage.setItem(SAVE_KEY, String(i)); }catch(e){} }
+function loadProgress(){
+  try{ const v = parseInt(localStorage.getItem(SAVE_KEY), 10); return isNaN(v) ? null : v; }
+  catch(e){ return null; }
+}
+
+// ═══════════════════════════════════════════════
+// STORY RUNNER
+// ═══════════════════════════════════════════════
+const EPISODES = MANIFEST.map(m => window[m.fn]);
+
+async function runFrom(idx){
+  if (idx < 0 || idx >= EPISODES.length) idx = 0;
+  startBgm();
+  T.clear(); Scene.clearText(); Scene.set('IDLE');
+  for (let i = idx; i < EPISODES.length; i++){
+    saveProgress(i);
+    await EPISODES[i]();
+  }
+  // 全話クリア → タイトルへ戻る
+  T.clear(); Scene.clearText();
+  stopBgm();
+  showTitle();
+}
+
+// ═══════════════════════════════════════════════
+// TITLE SCREEN
+// ═══════════════════════════════════════════════
+// タイトルのドット雨
+function initRain(){
+  const cvs = document.getElementById('rain-cvs');
+  const ctx = cvs.getContext('2d');
+  let W = 1, H = 1, drops = [];
+
+  function newDrop(spawnTop){
+    return {
+      x: Math.random() * W,
+      y: spawnTop ? -2 : Math.random() * H,
+      len: 3 + Math.floor(Math.random() * 4),
+      sp: 2.6 + Math.random() * 3.0,
+      a: 0.35 + Math.random() * 0.5,
+    };
+  }
+  function resize(){
+    const r = cvs.getBoundingClientRect();
+    W = cvs.width  = Math.max(40, Math.floor(r.width  / 3));  // 1/3解像度→3倍に拡大されドット化
+    H = cvs.height = Math.max(40, Math.floor(r.height / 3));
+    drops = [];
+    const n = Math.floor(W * H / 230);
+    for (let i = 0; i < n; i++) drops.push(newDrop(false));
+  }
+  resize();
+  new ResizeObserver(resize).observe(cvs);
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    ctx.clearRect(0, 0, W, H);
+    if (document.getElementById('title-screen').classList.contains('hide')) return;
+    for (const d of drops){
+      ctx.fillStyle = `rgba(160,225,205,${d.a})`;
+      const x = d.x | 0;
+      for (let k = 0; k < d.len; k++) ctx.fillRect(x, (d.y | 0) - k, 1, 1);
+      d.y += d.sp;
+      d.x += 0.18;  // わずかな風
+      if (d.y - d.len > H || d.x > W) Object.assign(d, newDrop(true));
+    }
+  })();
+}
+
+let titleGlowRunning = false;
+function startTitleGlow(){
+  if (titleGlowRunning) return;
+  titleGlowRunning = true;
+  const logo = document.getElementById('title-logo');
+  (function cycle(){
+    if (document.getElementById('title-screen').classList.contains('hide')) {
+      titleGlowRunning = false;
+      logo.style.transition = 'opacity 0.4s ease';
+      logo.style.opacity = '1';
+      return;
+    }
+    const dimDur = 1600 + Math.random()*2400;            // ゆっくり暗くなる
+    const dimTo  = (0.30 + Math.random()*0.35).toFixed(2);
+    logo.style.transition = `opacity ${dimDur}ms ease-in-out`;
+    logo.style.opacity = dimTo;
+    setTimeout(()=>{
+      const upDur = 1600 + Math.random()*2400;           // ゆっくり戻る
+      logo.style.transition = `opacity ${upDur}ms ease-in-out`;
+      logo.style.opacity = '1';
+      setTimeout(cycle, upDur + 500 + Math.random()*2800); // 明るいまま少し待つ（ランダム）
+    }, dimDur + 200 + Math.random()*900);                // 暗いまま少し待つ
+  })();
+}
+
+function showTitle(){
+  const scr = document.getElementById('title-screen');
+  const cont = scr.querySelector('.tmenu[data-act="continue"]');
+  cont.style.display = (loadProgress() === null) ? 'none' : '';
+  document.getElementById('title-menu').style.display = '';
+  document.getElementById('ep-select').style.display = 'none';
+  scr.classList.remove('hide');
+  startTitleGlow();
+}
+function hideTitle(){
+  document.getElementById('title-screen').classList.add('hide');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', ()=>{
+  // ep-listボタンをMANIFESTから動的生成
+  const epList = document.getElementById('ep-list');
+  MANIFEST.forEach((m, i) => {
+    const b = document.createElement('button');
+    b.className = 'tmenu ep-btn';
+    b.dataset.ep = i;
+    b.textContent = m.btnText;
+    epList.appendChild(b);
+  });
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('click',    bootAudio, { once:true });
+  document.addEventListener('touchstart', bootAudio, { once:true });
+
+  document.getElementById('app').addEventListener('click', e=>{
+    bootAudio();   // タップ毎に音声を起こす（モバイルのsuspended対策）
+    if(e.target.classList.contains('cbtn') || e.target.classList.contains('tmenu')) return;
+    T.handleTap();
+  });
+
+  // タイトルメニュー
+  document.querySelectorAll('.tmenu').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      bootAudio();
+      // エピソード直接選択
+      if (btn.dataset.ep !== undefined) {
+        hideTitle();
+        runFrom(parseInt(btn.dataset.ep, 10));
+        return;
+      }
+      const act = btn.dataset.act;
+      if (act === 'epselect') {
+        document.getElementById('title-menu').style.display = 'none';
+        document.getElementById('ep-select').style.display = 'flex';
+        return;
+      }
+      if (act === 'back') {
+        document.getElementById('ep-select').style.display = 'none';
+        document.getElementById('title-menu').style.display = '';
+        return;
+      }
+      hideTitle();
+      if (act === 'new') runFrom(0);
+      else runFrom(loadProgress() || 0);
+    });
+  });
+
+  startClock();
+  initPulse();
+  initRain();
+  showTitle();
+
+  // ▼ 開発用：タイトルを飛ばして切り替え演出を見る場合
+  // hideTitle(); (async()=>{ T.clear(); Scene.clearText(); Scene.set('IDLE'); await epilogue(); await ep1(); })();
+});
+</script>
+</body>
+</html>

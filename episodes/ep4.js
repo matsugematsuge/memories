@@ -1,0 +1,266 @@
+async function ep4(){
+  await T.say('その匂いは、客が階段を降りる前から届いた。','narr');
+  await T.say('この地下に、およそ似合わない高価な香水。','narr');
+  T.sp();
+  await T.say('上の連中が、たまに面白半分で降りてくる。他人の絶望を、買いに。', 'narr');
+  await T.say('だが、今夜の足音は違った。一歩ごとに、ためらいがにじんでいた。', 'narr');
+  await T.say('俺は煙を吐いて、待った。','narr');
+  T.sp();
+  await T.say('人は、多かれ少なかれ嘘の顔で生きている。', 'narr');
+  await T.say('笑いたくないときに、笑う。泣きたいときに、平気な顔をする。', 'narr');
+  await T.say('――だが、たまに。嘘の顔しか持っていない人間が、いる。', 'narr');
+  T.sp();
+  await T.tap();
+
+  await Scene.load('CLIENT_ep0');
+  knock(); await T.sleep(500); knock();
+  await T.sleep(300);
+  await T.say('ノックは、二つ。間合いまで優雅だった。','narr');
+  await T.dlg('「開いてる」');
+  T.sp();
+  Scene.set('CLIENT_ep0');
+  await T.sleep(400);
+  await T.say('入ってきたのは誰もが知っている顔だった。','narr');
+  await T.say('スクリーンの中で、何百万の人間を泣かせ、笑わせてきた女。','narr');
+  await T.say('深くかぶった帽子の下で、その顔は作り物みたいに整っていた。','narr');
+  T.sp();
+  await T.dlg('「座ってくれ。料金は前払い。作業が始まれば、取り消しはきかない」');
+  await T.dlg('「お喋りは、手短に」');
+  T.sp();
+  await T.npc('「……あなた、私が、誰だか」');
+  await T.dlg('「知らんね。ここじゃ、客はみんな、ただの客だ」');
+  T.sp();
+  await T.say('女は、ふっと肩の力を抜いた。','narr');
+  await T.say('それから、初めて見る人間の前でしか言えない言葉を口にした。','narr');
+  await T.npc('「消してほしいの。私の中の――たった一つ、本物の、感情を」');
+  T.sp();
+  await T.tap();
+
+  await T.dlg('「本物の感情を、消す。ずいぶん贅沢な悩みだな」');
+  await T.npc('「皮肉なら、慣れてるわ」');
+  await T.say('女は笑った。完璧で、温度の一切ない笑みだった。','narr');
+  T.sp();
+  await T.npc('「私は、生まれてから一度も、自分の感情というものを、持ったことがないの」');
+  await T.npc('「嬉しいふり。哀しいふり。愛しているふり。――ふり、だけは、誰より上手」');
+  await T.npc('「鏡の前で覚えた表情を貼りつけて、ここまで来た」');
+  T.sp();
+  await T.dlg('「それで、世界中を、泣かせてきたわけか」');
+  await T.npc('「ええ。空っぽの人形が、ね」');
+  T.sp();
+  await T.tap();
+
+  await T.npc('「十年前に『最後の朝』という映画を撮った。知ってる?」');
+  await T.say('知っている。知らない人間のほうが、少ない。', 'narr');
+  await T.say('一人の女の、なんでもない朝の幸福を、ただ描いただけの映画。それなのに世界が、ひれ伏した。', 'narr');
+  T.sp();
+  await T.npc('「あの役だけは、どうしても、できなかった。幸福を、演じられなかった」');
+  await T.npc('「私は、本物の幸福なんて、一度も、味わったことがなかったから」');
+  T.sp();
+  await T.npc('「だから――買ったの。ここの、同業の店で」');
+  await T.npc('「どこかの貧しい女の、なんでもない朝の記憶を。たった一つの、本物の、幸福を」');
+  T.sp();
+  await T.say('……そういうことか。', 'narr');
+  await T.say('こいつは、自分に欠けた一片を、金で埋めた。そして、それで今の大女優に登りつめた。', 'narr');
+  T.sp();
+  await T.tap();
+
+  await T.dlg('「賞を獲った。伝説になった。何が、不満だ」');
+  await T.npc('「あの朝が――私の、いちばん幸せな記憶に、なってしまったの」');
+  T.sp();
+  await T.say('女の声が、初めて、揺れた。','narr');
+  T.sp();
+  await T.npc('「自分の人生を、振り返るでしょう。いちばん、あたたかい場所を探すでしょう」');
+  await T.npc('「そこに、いつも、あの台所が、ある。知らない女の、知らない恋人と、踊った、朝が」');
+  await T.npc('「私のものじゃない幸福が。私の、いちばん奥に住んでいるの」');
+  T.sp();
+  await T.npc('「もう、わからない。どこまでが、私で、どこからが、あの女なのか」');
+  await T.npc('「私の感情は、ぜんぶ、借りものかもしれない。――それが、こわい」');
+  T.sp();
+  await T.npc('「だから、返したいの。あの女の幸福を、私の中から、消して」');
+  await T.npc('「空っぽでも、いい。せめて、本物の、空っぽに、戻りたい」');
+  T.sp();
+  await T.say('演じる女が、たった一度だけ手に入れた本物の温度。', 'narr');
+  await T.say('それを捨てに来た。――嘘で、いられなくなった嘘つきの、最後の意地か。', 'narr');
+  T.sp();
+  await T.say('俺は端末を引き寄せた。','narr');
+  await T.dlg('「読む。あんたのものと、借りものの境目を、確かめる」');
+  await T.say('ケーブルの先が、帽子をずらした彼女のうなじに、ぴたりと吸いついた。','narr');
+  await T.sleep(400);
+
+  await linkGlitch();
+  linkOn();
+  Scene.clearText();
+  await msys('[ LINK ESTABLISHED ]');
+  await msys('[ READING NEURAL ARCHIVE... ]');
+  await msys('[ NOTICE: FOREIGN MEMORY GRAFT DETECTED ]', '#ff2244');
+  await T.sleep(300);
+
+  await mlog('...初めての舞台は、五つのとき。');
+  await mlog('...泣く演技で、客が泣いた。私は、泣いていなかった。');
+  await mlog('...拍手は、好きだった。あれだけは、本物に聞こえた。');
+  await mlog('...どの恋も、台本どおりに始めて、台本どおりに終えた。');
+  await mlog('...一人になると、自分が、何の役もやっていないことに気づく。');
+
+  await T.sleep(200);
+  await T.say('（記憶の質感が、ふいに変わる）','narr');
+  await mwarm('...夜明けの、狭い台所。');
+  await mwarm('...コーヒーの匂い。裸足の足の裏に、冷たい床。');
+  await mwarm('...彼が、後ろから、ふざけて、抱きついてきた。');
+  await mwarm('...ラジオの古い曲で、二人、くだらなく、踊った。');
+  await mwarm('...「世界で、今、いちばん幸せ」と、私は――いや、誰かが、思った。');
+
+  await T.sleep(200);
+  glitch(500);
+  await T.sleep(200);
+  await msys('[ERR] RESIDUAL GHOST DETECTED', '#ff2244');
+  await T.sleep(200);
+  await T.say('――視界の端が、緑に波打った。', 'narr');
+  await T.say('どこからが本物で、どこからが借りものか。', 'narr');
+  await T.say('その問いが、俺自身の喉にも刺さって、抜けない。', 'narr');
+  await T.say('……俺の感情は、ちゃんと、俺のものか? ――くだらん。', 'narr');
+  T.sp();
+
+  await T.say('読み終えて、わかった。', 'narr');
+  await T.say('この女の言うとおりだ。借りものの朝は、根を張って、本物と見分けがつかない。', 'narr');
+  T.sp();
+  await mlog('...受賞のスピーチで、私は、泣いた。');
+  await mlog('...初めて、演技じゃない涙だと思った。');
+  await mlog('...でも、家に帰って、気づいた。');
+  await mlog('...あの涙も、あの台所の温度を借りていた。');
+  await mlog('...私は、借りた心で、本物の私を演じていた。');
+  await T.sleep(200);
+  await T.say('だが――一つだけ、この女が見落としてることが、ある。', 'narr');
+  T.sp();
+  await T.tap();
+
+  linkOff();
+  await linkGlitch();
+  Scene.clearText();
+  await msys('[ LINK TERMINATED ]');
+  T.sp();
+  await T.sleep(400);
+
+  await T.say('端末の光が、すっと退いた。','narr');
+  await T.say('女は帽子を脱いで、化粧の崩れた顔を隠そうともしなかった。','narr');
+  T.sp();
+  await T.dlg('「全部、読ませてもらった」');
+  await T.dlg('「たしかに、あの朝は、あんたのものじゃない。買ったものだ」');
+  T.sp();
+  await T.say('女は目を閉じた。覚悟の顔だった。','narr');
+  T.sp();
+  await T.dlg('「だが、一つ、訊く」');
+  await T.dlg('「借りものの幸福を、十年も、後生大事に抱えてきたのは――誰だ?」');
+  await T.dlg('「その朝を、本物だと信じたがって、泣いたのは。あんた自身じゃないのか?」');
+  T.sp();
+  await T.say('女の、閉じた目から、一筋、こぼれた。','narr');
+  T.sp();
+  await T.dlg('「記憶は、借りものでも。それを抱きしめた手は、あんたのものだ」');
+  await T.dlg('「消せば、たしかに、嘘は消える。だが、あんたが初めて温かいと思えた感覚も、一緒に消えるぞ」');
+  T.sp();
+  await T.npc('「……それでも」');
+  await T.npc('「他人の心で、これ以上、笑いたくない」');
+  T.sp();
+  await T.tap();
+
+  const ch = await showChoices();
+  T.sp();
+  if(ch==='ERASE') await ep4EraseEnd();
+  else             await ep4KeepEnd();
+  await ep4Epilogue();
+}
+
+async function ep4EraseEnd(){
+  await msys('[ ERASING GRAFT... ]');
+  await T.say('俺は、借りものの朝に、削除のマーカーを置いた。','narr');
+  await T.say('コーヒーの匂いも、裸足の床も、ラジオの曲も。他人のいちばん幸せな朝を、彼女の中から引き剥がしていく。','narr');
+  T.sp();
+  await T.say('根が、深い。十年、本物の顔をして居座ってきた幸福だ。', 'narr');
+  await T.say('剥がしたあとには、たぶん、何も残らない。', 'narr');
+  glitch(300);
+  await T.sleep(350);
+  await msys('[ COMPLETE ]', '#00ff55');
+  T.sp();
+  await T.say('女は、ゆっくりと目を開けた。','narr');
+  await T.say('そして、自分の胸の、いちばん奥を覗き込むような顔をした。','narr');
+  await T.npc('「……からっぽだわ」');
+  await T.npc('「やっと、嘘じゃ、なくなった」');
+  T.sp();
+  await T.say('女は笑った。今度は、温度も何もない。だが、それは、今夜俺が初めて見る、誰のものでもない笑みだった。','narr');
+  await T.npc('「ありがとう。これで、私は、ただの下手な人形に、戻れる」');
+  T.sp();
+  await T.say('女は帽子を、深くかぶり直した。','narr');
+  await T.say('明日からこいつは、本物の幸福を知らないまま、それを演じ続ける。', 'narr');
+  await T.say('――その演技は、たぶん二度と、世界を泣かせはしない。', 'narr');
+  T.sp();
+  await T.say('ハイヒールの音が、階段を上り、街の喧騒に溶けて消えた。','narr');
+  Scene.set('IDLE');
+  T.sp();
+  await T.say('嘘を、本物だと信じられること。', 'narr');
+  await T.say('それも、一つの才能だったのかもしれん。――こいつは、それを自分で捨てた。', 'narr');
+}
+
+async function ep4KeepEnd(){
+  await T.say('俺は、ケーブルを抜いて首を振った。','narr');
+  T.sp();
+  await T.npc('「……どうして」');
+  await T.dlg('「消すには、惜しい」');
+  T.sp();
+  await T.say('女が気色ばんだ。','narr');
+  await T.npc('「私の心の話よ。あなたに、何が…」');
+  await T.dlg('「ああ。あんたの心だ。だから、言う」');
+  T.sp();
+  await T.say('俺は、ゆっくりタバコの煙を吐いた。','narr');
+  await T.dlg('「あんたは、借りものだと言った。だが、その朝の記憶で、十年、震えたのは、あんたの心臓だ」');
+  await T.dlg('「借りた種でも、根を張った畑は、あんたのものだろう」');
+  T.sp();
+  await T.npc('「……でも、最初の、一粒が、嘘だった」');
+  await T.dlg('「最初の一粒が、どこから来たかなんて、誰も覚えてない」');
+  await T.dlg('「大事なのは、あんたが、温かいものを、もう知っちまったってことだ」');
+  await T.dlg('「知ったからには、探せる。今度は、あんた自身の台所を」');
+  T.sp();
+  await T.say('女は、長いあいだ、黙っていた。','narr');
+  await T.say('やがて、化粧の崩れた顔のまま、ほんの少し口角を上げた。','narr');
+  await T.say('――それは、台本にない、下手くそで不格好な笑みだった。','narr');
+  T.sp();
+  await T.npc('「……下手な顔。久しぶりに、したわ」');
+  await T.dlg('「いい顔だ。それが、あんたの素顔だろう」');
+  T.sp();
+  await T.say('女は帽子を、手に持ったまま、階段を上っていった。素顔のまま、街の灯りの中へ。','narr');
+  Scene.set('IDLE');
+  T.sp();
+  await T.say('借りものの温度が、いつか本物の火を点けることも、ある。', 'narr');
+  await T.say('――そう信じておく。そのほうが、この商売も少しは、ましに思える。', 'narr');
+}
+
+async function ep4Epilogue(){
+  Scene.set('IDLE');
+  await T.sleep(500);
+  await T.say('香水の匂いだけが、店にしばらく残っていた。','narr');
+  await T.say('俺は煙を深く吸い込む。','narr');
+  T.sp();
+  await T.tap();
+  await T.say('この街じゃ、誰もが、なりたい自分を演じている。','narr');
+  await T.say('上の連中は、若さや、幸福や、立派な過去を金で買って身につける。','narr');
+  await T.say('下の連中は、それを売って暮らしの足しにする。','narr');
+  await T.say('――本物の顔なんて、もうどこにも売っていない。','narr');
+  T.sp();
+  await T.say('俺は、本物と偽物を、選り分ける。','narr');
+  await T.say('他人の記憶を覗いて、これは本物、これは借りもの、と、自分勝手に値踏みをする。','narr');
+  T.sp();
+  await T.tap();
+  await T.say('――だが、ふと、思う。', 'narr');
+  await T.say('俺自身の中身は、一度も確かめたことが、ない。', 'narr');
+  await T.say('この冷めた手つきも、この口の悪さも。本物か、それとも、どこかで貼りつけた役なのか。', 'narr');
+  await T.say('……考えても仕方ない。俺には、それを確かめる鏡がない。', 'narr');
+  T.sp();
+  await T.tap();
+  await T.say('俺は灰皿でタバコをもみ消す。','narr');
+  await T.say('端末の暗い画面に、俺の顔がぼんやり映っている。','narr');
+  await T.say('よく知らない顔だ。毎晩、見ているのに。', 'narr');
+  T.sp();
+  await T.say('緑の光が、瞬く。今夜は、もう芝居も、客も、ない。','narr');
+  T.sp();
+  await episodeTransition(
+    '[ END OF LOG: EP.4  THE TRUE FACE ]', '素顔',
+    '[ START LOG: EP.5  SUNLIGHT ]', 'ひだまり');
+}

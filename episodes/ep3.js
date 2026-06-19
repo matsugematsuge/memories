@@ -1,0 +1,296 @@
+async function ep3(){
+  await T.say('店の奥に、客には見せない棚がある。','narr');
+  await T.say('そこに、これまで「買い取って」きた記憶が、ぜんぶしまってある。','narr');
+  T.sp();
+  await T.say('うちの商売は、三つだ。', 'narr');
+  await T.say('一つ、消す。いらない記憶を、跡形もなく消し去る。後には、何も残らない。', 'narr');
+  await T.say('二つ、買う。手放したい記憶に、金を払って、引き取ってやる。', 'narr');
+  await T.say('そして三つ目――売る。引き取った記憶を、欲しがる連中に、流す。', 'narr');
+  await T.say('名前も知らない他人の、忘れてしまいたい夜が、ラベルを貼られて、この棚に整然と並んでいる。','narr');
+  T.sp();
+  await T.say('買いに降りてくるのは、たいてい上の連中だ。','narr');
+  await T.say('何もかも持っていて、退屈しきった金持ちが、他人の絶望を酒の肴にするために。','narr');
+  await T.say('反吐の出る商売だ。――だが、俺はこれで、食っている。', 'narr');
+  T.sp();
+  await T.say('棚のほうから、かすかに埃の匂いがした。','narr');
+  await T.say('今夜は、消しに来る客じゃない。そんな気が、していた。', 'narr');
+  T.sp();
+  await T.tap();
+
+  await Scene.load('CLIENT_ep0');
+  knock(); await T.sleep(700); knock();
+  await T.sleep(300);
+  await T.say('ノックは、一つ。間をおいて、もう一つ。','narr');
+  await T.say('踏ん切りのつかない音だった。','narr');
+  await T.dlg('「開いてる」');
+  T.sp();
+  Scene.set('CLIENT_ep0');
+  await T.sleep(400);
+  await T.say('入ってきたのは五十半ばの、くたびれた男だった。','narr');
+  await T.say('役所勤めでもしていそうな、地味なコート。背は丸く、手には何も持っていない。','narr');
+  await T.say('ただ、片方の手だけが、上着の内ポケットを、ずっと押さえていた。','narr');
+  T.sp();
+  await T.dlg('「座ってくれ。料金は前払い。作業が始まれば、取り消しはきかない」');
+  await T.dlg('「お喋りは、手短に」');
+  T.sp();
+  await T.npc('「……いや」');
+  await T.say('男は、首を振った。','narr');
+  await T.npc('「消しに、来たんじゃない」');
+  await T.npc('「私は……買いに、来た」');
+  T.sp();
+  await T.say('手が、止まった。', 'narr');
+  await T.say('買いに来る客は、たいてい、上から降りてくる。下層の、こんな冴えない男が、わざわざ。', 'narr');
+  await T.say('――妙だ。', 'narr');
+  T.sp();
+  await T.tap();
+
+  await T.dlg('「うちで売ってるのは、他人の記憶だ。見ず知らずの、誰かの記憶だぞ?」');
+  await T.npc('「知ってる。だが、これは……見ず知らず、じゃ、ない」');
+  T.sp();
+  await T.say('男は、ずっと押さえていた内ポケットから、一枚の古い紙片を取り出した。','narr');
+  await T.say('端の擦り切れた、預かり証。番号と、この店の判だけがかすれて残っている。','narr');
+  T.sp();
+  await T.npc('「妻のものだ。去年、死んだ」');
+  await T.npc('「遺品を整理していたら、引き出しの奥から、これが出てきた」');
+  T.sp();
+  await T.say('預かり証。――昔の、うちの買い取りの控えだ。', 'narr');
+  await T.say('こいつの女房は、いつかここへ来て、何かを俺に売っていった。', 'narr');
+  T.sp();
+  await T.npc('「女房が昔ここで売ったものを、買い戻したい。そういうことか」');
+  await T.npc('「ああ」');
+  await T.npc('「中身も、わかってる。――娘だ。死んだ、私たちの娘の記憶だよ」');
+  T.sp();
+  await T.tap();
+
+  await T.say('――先回りされた。', 'narr');
+  await T.say('売った中身を、最初から知っている客は、珍しい。', 'narr');
+  T.sp();
+  await T.dlg('「事情を、聞こうか」');
+  await T.say('男は、ゆっくりと話しはじめた。長い時間をかけて受け入れた者の、口ぶりだった。','narr');
+  await T.npc('「娘は……、五つで死んだ。病気だった」');
+  await T.npc('「妻は、壊れたよ。毎晩、娘の名を呼んで、泣いて」');
+  await T.npc('「そして、ある朝、黙って出かけて――帰ってきたときには、娘のことを、まるごと忘れていた」');
+  await T.npc('「ここで、売ったんだ。抱えきれなかった娘の記憶を」');
+  T.sp();
+  await T.dlg('「あんたの女房が忘れたのは、わかった。だが、あんたは覚えてるんだろう。なら、何が要る」');
+  T.sp();
+  await T.npc('「……私の知らない、娘が、ほしい」');
+  await T.npc('「妻と二人きりの、昼間の娘を。私が仕事に出ているときの、娘を。私は、何ひとつ知らない」');
+  await T.npc('「妻も、娘も、もう、いない。覚えているのは、私だけだ。なのに、半分しか知らないんだ」');
+  await T.npc('「死ぬ前に……娘の、ぜんぶが、ほしいんだよ」');
+  T.sp();
+  await T.say('裏切りでも、隠し事でもない。', 'narr');
+  await T.say('――半分だけの娘を、二十年、抱えてきた男の最後の欲だ。', 'narr');
+  T.sp();
+  await T.say('俺は端末を引き寄せた。','narr');
+  await T.dlg('「先にあんたを読む。預かり証の番号と、あんたの記憶を、照合させてもらう」');
+  await T.say('ケーブルを、男のうなじへ。留め金が、骨の近くでこもった音を立てた。','narr');
+  await T.sleep(400);
+
+  await linkGlitch();
+  linkOn();
+  Scene.clearText();
+  await msys('[ LINK ESTABLISHED ]');
+  await msys('[ READING NEURAL ARCHIVE... ]');
+  await msys('[ CROSS-REF: VAULT RECORD #... ]');
+  await T.sleep(300);
+
+  await mlog('...娘が生まれた日のことを覚えている。');
+  await mlog('...小さな手が、私の指を握って離さなかった。');
+  await mlog('...妻は、泣きながら笑っていた。');
+  await mlog('...三人で、いろんなものに、名前をつけた。');
+  await mlog('...「うちは、世界で一番、うるさい家だね」と、妻は言った。');
+
+  await mlog('...娘が熱を出したのは、五つの冬だった。');
+  await mlog('...病院の廊下は、いつも、消毒の匂いがした。');
+  await mlog('...娘は翌年の春を待てなかった。');
+  await mlog('...あんなに小さな棺がこの世にあるなんて、私は知らなかった。');
+  await mlog('...家から、音が、消えた。');
+
+  await T.sleep(300);
+  glitch(500);
+  await T.sleep(200);
+  await msys('[ERR] RESIDUAL GHOST DETECTED', '#ff2244');
+  await T.sleep(200);
+  await T.say('――視界の端が、緑にちらついた。', 'narr');
+  await T.say('他人の記憶のはずなのに、この「音の消えた家」に、妙な座りの良さを感じた。', 'narr');
+  await T.say('まるで、自分も、どこかに似た部屋を持っていたみたいに。', 'narr');
+  await T.say('……もっとも俺に家族なんて、いた覚えはないが。', 'narr');
+  T.sp();
+
+  await mlog('...ある朝、妻が、黙って出かけた。');
+  await mlog('...帰ってきた妻の表情は、妙に清々しかった。');
+  await mlog('...そして、私を見て、不思議そうに言ったんだ。');
+  await mlog('...「ねえ。この子供部屋、誰の?」');
+  await mlog('...妻の中から、娘が、いなくなっていた。');
+
+  await T.say('男のうめくような声が聞こえる。リンクの向こうで、震えている。','narr');
+
+  await mlog('...言えなかった。');
+  await mlog('...本当のことを言えば、妻は、もう一度、娘を喪う。');
+  await mlog('...だから私は、子供部屋を、納戸ということにした。');
+  await mlog('...娘の写真を、ぜんぶ、隠した。');
+  await mlog('...娘を覚えているのは、その日から、私、一人になった。');
+  await T.sleep(300);
+
+  await T.say('男の言ったとおりだった。', 'narr');
+  await T.say('こいつの記憶の隅々まで、死んだ娘が焼きついている。', 'narr');
+  await T.say('抱えきれずに売り払った女房と、半分だけを抱え続けた男。', 'narr');
+  await T.say('二十年、別々の地獄を歩いてきた二人だ。', 'narr');
+  T.sp();
+  await T.tap();
+
+  await T.say('俺は手元の端末を叩いた。預かり証の番号を、打ち込む。','narr');
+  await msys('[ VAULT RECORD #4471 — FOUND ]');
+  await msys('[ OWNER: 故人 / 保管: 21年 ]');
+  await msys('[ TAG: 喪失・小児 ]');
+  await T.sleep(300);
+  await T.say('あった。二十一年、誰にも買われず、棚の隅で埃をかぶっていた。', 'narr');
+  await T.say('――あの男の女房が、抱えきれずに手放したもの。', 'narr');
+  T.sp();
+  await T.tap();
+
+  linkOff();
+  await linkGlitch();
+  Scene.clearText();
+  await msys('[ LINK TERMINATED ]');
+  T.sp();
+  await T.sleep(400);
+
+  await T.say('端末の光が、すっと引いた。','narr');
+  await T.say('男はケーブルを抜かれたことにも気づかず、俺の次の言葉を待っていた。','narr');
+  T.sp();
+  await T.dlg('「あった。あんたの女房が、ここに売った、娘さんの記憶だ」');
+  await T.dlg('「二十一年、棚の隅で、誰にも買われずに眠ってる」');
+  T.sp();
+  await T.say('男は両手で顔を覆った。肩が、小刻みに震えていた。','narr');
+  await T.npc('「……まだ、あったのか」');
+  await T.npc('「妻が、見ていた、娘が」');
+  T.sp();
+  await T.dlg('「一つ、言っておく」');
+  await T.dlg('「あんたの女房は、これを『消す』こともできた。そのほうが、ずっと楽だし、跡形も残らない」');
+  await T.dlg('「だが、しなかった。金を受け取って、わざわざ『売る』ほうを、選んだ」');
+  await T.dlg('「自分の中からは、追い出した。だが、この世から消すことだけは、できなかったんだ」');
+  await T.dlg('「あんたの娘は、二十一年、この棚で、ちゃんと、この世に残っていた」');
+  T.sp();
+  await T.dlg('「ただし、これは、写真じゃない。あんたの女房が、感じたまま、ぜんぶだ」');
+  await T.dlg('「娘を喪った、あの女の絶望ごと、あんたの頭に、流し込むことになる」');
+  await T.dlg('「今のあんたの哀しみに、もう一人分の哀しみが、上乗せされる。――それでも、あんたは記憶を買うのか?」');
+  T.sp();
+  await T.say('男は、涙をたたえた目で、棚のほうを見た。','narr');
+  await T.say('二十一年、誰の目にも触れず、娘がしまわれていた場所を。','narr');
+  T.sp();
+  await T.npc('「……妻が一人で抱えるには、重すぎたんだ」');
+  await T.npc('「なら、せめて。残りは、私が」');
+  T.sp();
+  await T.tap();
+
+  const ch = await showChoices('[ 渡す ]', '[ 渡さない ]');
+  T.sp();
+  if(ch==='ERASE') await ep3GiveEnd();
+  else             await ep3DenyEnd();
+  await ep3Epilogue();
+}
+
+async function ep3GiveEnd(){
+  await msys('[ TRANSFERRING VAULT #4471... ]');
+  await T.say('俺は、棚の記憶をケーブルに繋ぎ替えた。','narr');
+  await T.say('二十一年ぶんの埃を払うように、ゆっくりと、男の頭へ流し込んでいく。','narr');
+  T.sp();
+  await T.say('これは、売り物だ。金を取って、他人の地獄を、引き渡す。', 'narr');
+  await T.say('いつもの仕事だ。なのに、指の先が、やけに慎重になった。', 'narr');
+  await T.sleep(300);
+  await msys('[ TRANSFER COMPLETE ]', '#00ff55');
+  T.sp();
+  await T.say('男の体が、びくりと跳ねた。','narr');
+  await T.say('そして、知らないはずの記憶の中で、もう一度、娘に会った。','narr');
+  await T.say('妻の目を通して。妻が見ていた、笑い声を。妻が立ち会った、最期を。','narr');
+  T.sp();
+  await T.say('男は、声を上げて、泣いた。子供みたいに、しゃくり上げて。','narr');
+  await T.say('――哀しみが、二倍になった涙だった。だが、それは、二人分の娘の記憶でもあった。','narr');
+  T.sp();
+  await T.npc('「……ありがとう。これで、やっと」');
+  await T.npc('「妻を、ひとりに、しないで、すむ」');
+  T.sp();
+  await T.say('男は、ふらつきながら立ち上がった。背中は、来たときより重そうだった。','narr');
+  await T.say('当たり前だ。手放しに来たんじゃない。引き取りに来たんだから。', 'narr');
+  T.sp();
+  await T.say('男は、預かり証を、そっとカウンターに置いて、出ていった。','narr');
+  Scene.set('IDLE');
+  await T.say('もう、いらない、というように。','narr');
+  T.sp();
+  await T.say('売り物が、一つ、棚から消えた。', 'narr');
+  await T.say('なのに、店が、やけに広く感じた。', 'narr');
+  await T.say('――たぶん、あそこには、ずっと、二人分の沈黙が詰まっていたんだ。', 'narr');
+}
+
+async function ep3DenyEnd(){
+  await T.say('俺は、棚の端末を閉じた。記憶は、棚の奥に置いたままにした。','narr');
+  T.sp();
+  await T.npc('「……どうして」');
+  await T.dlg('「やめとけ」');
+  T.sp();
+  await T.say('男が、すがるように身を乗り出した。','narr');
+  await T.npc('「金なら、いくらでも払う。あれは、私の……私の娘なんだ!」');
+  T.sp();
+  await T.dlg('「あんたの女房は、それを抱えて、生きられなかった。だから、ここへ、置いた」');
+  await T.dlg('「同じものを、今のあんたに渡したら、どうなる。――あんたまで、潰れるぞ」');
+  T.sp();
+  await T.say('俺は、新しく火を点けることもせず、ただ男の目を見た。','narr');
+  await T.dlg('「それに、あんたは、もう二十年、娘のことを覚えてる。たった一人で、忘れずにいてやった」');
+  await T.dlg('「それ以上、何を、背負うつもりだ」');
+  T.sp();
+  await T.npc('「……だが、妻の中の、娘は」');
+  await T.dlg('「ここで眠ってる。埃をかぶって、安全にな」');
+  await T.dlg('「あんたが死ぬまで、誰にも売らん。約束する」');
+  T.sp();
+  await T.say('男は、長いあいだ、棚を見つめていた。','narr');
+  await T.say('やがて、ゆっくりと、肩の力を抜いた。','narr');
+  T.sp();
+  await T.npc('「……そうか。眠って、いるのか」');
+  await T.npc('「なら……起こさないでおくよ」');
+  T.sp();
+  await T.say('男は、預かり証を、また内ポケットへしまった。来たときと、同じ場所へ。','narr');
+  await T.npc('「妻の分も、もう少し、私が、覚えておく」');
+  await T.say('そう言って、男は戸口で軽く頭を下げ、夜の底へ帰っていった。','narr');
+  Scene.set('IDLE');
+  T.sp();
+  await T.say('抱えきれなくて、手放す者がいる。', 'narr');
+  await T.say('抱えきれるうちは、と、抱え続ける者もいる。', 'narr');
+  await T.say('――どちらが、優しいのかは、俺には、わからない。', 'narr');
+}
+
+async function ep3Epilogue(){
+  Scene.set('IDLE');
+  await T.sleep(500);
+  await T.say('男が出ていって、店はまた静かになった。','narr');
+  await T.say('俺は、奥の棚の前にしばらく立っていた。','narr');
+  T.sp();
+  await T.tap();
+  await T.say('ここには、何百もの、忘れものが眠っている。','narr');
+  await T.say('誰かが、抱えきれずに売り払った夜。誰かが、金に換えてでも下ろしたかった重荷。','narr');
+  await T.say('売った連中は、もう軽くなって、それぞれの暮らしへ帰っていった。','narr');
+  T.sp();
+  await T.say('軽くなった人間の、重さの分だけ、この棚は重くなる。','narr');
+  await T.say('記憶を買い取る商売ってのは、つまり――他人が手放したものを、代わりに覚えておく商売だ。','narr');
+  T.sp();
+  await T.tap();
+  await T.say('ふと、棚の一番奥が気になった。', 'narr');
+  await T.say('自分でしまった覚えのない、古いラベルがあるような気がして。', 'narr');
+  await T.say('――近づこうとして、やめた。', 'narr');
+  await T.say('覗かないほうがいい棚も、ある。それくらいは、この商売の中で学んだ。', 'narr');
+  T.sp();
+  await T.tap();
+  await T.say('俺は棚に背を向け、端末の椅子に戻る。煙を一本、つけ直す。','narr');
+  await T.say('カウンターの上の預かり証を、指でつまみ上げた。','narr');
+  T.sp();
+  await T.say('覚えておく、というのは。', 'narr');
+  await T.say('たぶん、いちばん地味で、いちばん長い愛し方だ。', 'narr');
+  T.sp();
+  await T.say('灰皿で、タバコをもみ消す。','narr');
+  await T.say('今夜は、もう客は来ないだろう。棚の中の連中だけが、息を潜めて眠っている。','narr');
+  T.sp();
+  await episodeTransition(
+    '[ END OF LOG: EP.3  LEFT BEHIND ]', '忘れもの',
+    '[ START LOG: EP.4  THE TRUE FACE ]', '素顔');
+}
