@@ -347,14 +347,26 @@ body {
   background: var(--mid);
   margin-bottom: 28px;
 }
-#ep-end-title {
+#ep-end-epnum {
   font-family: 'DotGothic16', monospace;
   font-size: 28px;
   color: var(--bright);
   text-shadow: 0 0 12px rgba(0,255,85,0.55);
   letter-spacing: 6px;
-  margin-bottom: 56px;
+  margin-bottom: 52px;
 }
+#ep-end-next {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--amber);
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 2;
+}
+#ep-end-next.show { opacity: 0.8; }
 #ep-end-btn {
   font-family: 'Press Start 2P', monospace;
   font-size: 9px;
@@ -364,8 +376,10 @@ body {
   padding: 14px 22px;
   cursor: pointer;
   letter-spacing: 2px;
-  animation: fade 1.6s ease infinite;
+  opacity: 0;
+  transition: opacity 0.7s ease;
 }
+#ep-end-btn.show { opacity: 1; animation: fade 1.6s ease infinite; }
 #ep-end-btn:active { transform: scale(0.96); }
 
 /* ── TITLE SCREEN ────────────────────────────── */
@@ -535,8 +549,9 @@ body {
   <div id="ep-end">
     <div id="ep-end-log"></div>
     <div id="ep-end-rule"></div>
-    <div id="ep-end-title"></div>
-    <button id="ep-end-btn">NEXT EPISODE &rarr;</button>
+    <div id="ep-end-epnum"></div>
+    <div id="ep-end-next"></div>
+    <button id="ep-end-btn">&rarr;</button>
   </div>
 
   <!-- TITLE SCREEN -->
@@ -1257,29 +1272,47 @@ function loadProgress(){
 // ═══════════════════════════════════════════════
 // EPISODE TRANSITION
 // ═══════════════════════════════════════════════
-async function episodeTransition(endLabel, endJp) {
-  const scroll = document.getElementById('txt-scroll');
-  const card   = document.getElementById('ep-end');
+async function episodeTransition(endLabel, endJp, startLabel, startJp) {
+  const scroll  = document.getElementById('txt-scroll');
+  const card    = document.getElementById('ep-end');
+  const nextEl  = document.getElementById('ep-end-next');
+  const btnEl   = document.getElementById('ep-end-btn');
 
-  // テキストをフェードアウト
-  scroll.style.transition = 'opacity 0.8s ease';
+  // EP番号を抽出
+  const endM   = (endLabel   || '').match(/EP\.(\d+)/);
+  const startM = (startLabel || '').match(/EP\.(\d+)/);
+  const endNum   = endM   ? 'EP.' + endM[1]   : '';
+  const startNum = startM ? 'EP.' + startM[1] : '';
+
+  // テキストを1.4秒でフェードアウト
+  scroll.style.transition = 'opacity 1.4s ease';
   scroll.style.opacity = '0';
-  await new Promise(r => setTimeout(r, 900));
+  await new Promise(r => setTimeout(r, 1400));
 
-  // エンドカードに内容をセット
-  document.getElementById('ep-end-log').textContent   = endLabel;
-  document.getElementById('ep-end-title').textContent = endJp;
+  // 内容をセット（next・btnは初期非表示）
+  document.getElementById('ep-end-log').textContent   = '[ END OF LOG: ]';
+  document.getElementById('ep-end-epnum').textContent = endNum + (endJp ? '  ' + endJp : '');
+  nextEl.textContent = startNum && startJp
+    ? '[ NEXT EPISODE : ' + startNum + ' : ' + startJp + ' ]'
+    : '[ NEXT EPISODE ]';
+  nextEl.classList.remove('show');
+  btnEl.classList.remove('show');
 
   // エンドカードをフェードイン
   card.classList.add('show');
 
+  // 1.4秒後に NEXT ラベルとボタンを出現
+  await new Promise(r => setTimeout(r, 1400));
+  nextEl.classList.add('show');
+  btnEl.classList.add('show');
+
   // ボタンが押されるまで待機
-  await new Promise(r => {
-    document.getElementById('ep-end-btn').onclick = () => r();
-  });
+  await new Promise(r => { btnEl.onclick = () => r(); });
 
   // エンドカードをフェードアウト
   card.classList.remove('show');
+  nextEl.classList.remove('show');
+  btnEl.classList.remove('show');
   await new Promise(r => setTimeout(r, 1400));
 
   // テキストエリアをクリア・復元
