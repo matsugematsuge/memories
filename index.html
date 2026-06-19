@@ -478,6 +478,7 @@ body {
   flex-direction: column;
   gap: 16px;
   align-items: center;
+  transition: opacity 1.4s ease;
 }
 #title-menu.hide { display: none; }
 .tmenu {
@@ -1502,13 +1503,17 @@ function showTitle(){
   scr.classList.remove('hide');
   startTitleGlow();
 
-  // TAPで音声起動＋メニュー表示（一度きり）
+  // TAPで音声起動＋メニューをゆっくりフェードイン（一度きり）
   scr.addEventListener('click', function onTap(e){
     if (e.target.classList.contains('tmenu')) return;
     scr.removeEventListener('click', onTap);
     bootAudio();
     document.getElementById('title-tap').classList.add('hide');
-    document.getElementById('title-menu').classList.remove('hide');
+    const menu = document.getElementById('title-menu');
+    menu.style.opacity = '0';
+    menu.classList.remove('hide');
+    void menu.offsetWidth;   // リフローを挟んでトランジションを効かせる
+    menu.style.opacity = '1';
     startTitleBgm();
   });
 }
