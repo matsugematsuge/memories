@@ -29,26 +29,26 @@ async function ep0(){
   T.sp();
   await T.say('店、と呼ぶには狭すぎる。地下に掘った穴だ。湿った壁。錆びた配管。天井から垂れた裸電球が一つ。','narr');
   await T.sleep(200);
-  await T.say('看板は出していない。住所も、どこにも載っていない。','narr');
+  await T.say('看板は出していない。都市の骨組みの、ただの空白だ。','narr');
   await T.say('それでも、客は来る。','narr');
   await T.sleep(150);
   await T.say('忘れたい人間は、いつの時代も、どこにでもいるからだ。', 'narr');
   T.sp();
-  await T.say('俺はそこで毎晩、煙を吐いて客を待つ。','narr');
+  await T.say('俺はそこで毎晩、タバコの煙を吐いて客を待つ。','narr');
   T.sp();
   await T.tap();
 
   await Scene.load('CLIENT_ep0');
-  for(let i=0;i<3;i++){ knock(); await T.sleep(i===0?0:550); }
+ for(let i=0;i<3;i++){ if(i>0) await T.sleep(550); knock(); }
   await T.sleep(300);
-  await T.say('ノックは三回。間隔が機械みたいに正確だった。','narr');
+  await T.say('ノックは三回。間隔が機械のように正確だった。','narr');
   await T.sleep(200);
   await T.say('俺は端末から目を離さず、低く言った。', 'narr');
   await T.dlg('「開いてる」');
   T.sp();
   Scene.set('CLIENT_ep0');
   await T.sleep(400);
-  await T.say('軋んだ音を立てて、扉が開いた。','narr');
+  await T.say('軋んだ音を立てて、店の重たい扉が開いた。','narr');
   await T.say('入ってきたのは若い女だった。三十代前半。','narr');
   await T.sleep(150);
   await T.say('仕立てのいいコートを着ている。だが袖口がほつれていた。何日も同じものを着ているような、くたびれ方だった。','narr');
@@ -62,7 +62,7 @@ async function ep0(){
   T.sp();
   await T.say('俺は煙を吐いた。いつもの口上を、いつもの調子で返す。', 'narr');
   await T.dlg('「座ってくれ。料金は前払い。作業が始まれば、取り消しはきかない」');
-  await T.dlg('「お喋りは、手短に」');
+  await T.dlg('「余計なお喋りは、手短に頼む」');
   T.sp();
   await T.say('女は、軋む椅子に、ゆっくりと腰を下ろした。','narr');
   await T.tap();
@@ -71,16 +71,16 @@ async function ep0(){
   await T.say('女は、膝の上で、両手を握りしめた。','narr');
   await T.npc('「人を……一人。記憶から、消したいの」');
   T.sp();
-  await T.npc('「死んだのか」');
+  await T.dlg('「死んだのか」');
   await T.say('女の肩が、わずかに震えた。','narr');
   await T.dlg('「三年前。事故で。あっけなかった」');
   T.sp();
   await T.say('こういう話は何百回と聞いてきた。死んだ恋人。消えた家族。裏切った友人。みんな同じ顔で、この椅子に座る。', 'narr');
   await T.sleep(250);
-  await T.say('普通の人間なら放っておけばいい。痛い記憶ほど、時間が勝手に薄めてくれる。', 'narr');
+  await T.say('普通の人間なら放っておけばいい。痛みを伴う記憶ほど、時間が勝手に薄めてくれる。', 'narr');
   await T.say('だが、この女には、それができない。', 'narr');
   T.sp();
-  await T.dlg('「その目——サイバネだな。だったら、時間は役に立たない」');
+  await T.dlg('「その目——サイバネだな。だったら、死ぬまでへばりつく記憶だ」');
   await T.say('女はゆっくりと頷いた。初めて、まっすぐ俺を見た。','narr');
   T.sp();
   await T.npc('「この目を入れたとき、医者が言ったわ。『これからは、何ひとつ忘れずに済みますよ』って」');
@@ -128,7 +128,7 @@ async function ep0(){
   await T.say('——視界が、一瞬、緑色のノイズに染まった。', 'narr');
   await T.say('他人の記憶を読みすぎると、たまにこうなる。脳が、混ざる感覚。', 'narr');
   await T.sleep(250);
-  await T.say('俺は目を擦った。地下の湿気のせいだろう。', 'narr');
+  await T.say('俺は目を擦った。', 'narr');
   await T.sleep(350);
 
   await Scene.addText('...一緒に暮らしはじめて三年後の、ある朝だった。', '#44ff88', 2);
@@ -150,9 +150,9 @@ async function ep0(){
   await T.say('端末の画面が静かになった。','narr');
   await T.say('女の頬を、一筋、涙が伝っていた。義眼のほうからは、何も流れない。','narr');
   T.sp();
-  await T.say('俺はタバコの煙を吸って、吐いた。', 'narr');
+  await T.say('俺はタバコの煙を大きく吸い込んで、吐いた。', 'narr');
   await T.dlg('「準備はできた」');
-  await T.npc('「一度消せば、二度と戻らない。……本当に、全部でいいんだな」');
+  await T.dlg('「一度消せば、二度と戻らない。……本当に、全部でいいんだな」');
   T.sp();
   await T.say('女は、震える声で、しかし、はっきりと言った。','narr');
   await T.npc('「お願い、します」');
@@ -188,12 +188,12 @@ async function eraseEnd(){
   await T.say('女は、ゆっくりと顔を上げた。','narr');
   await T.say('何かを思い出そうとするような顔をして、それから思い出すものが何もないことに気づいたような、不思議な表情をした。','narr');
   T.sp();
-  await T.npc('「……あれ。私、何を話してたんだっけ」');
+  await T.npc('「……私、何を話してたの？」');
   await T.say('女は、自分の頬を伝う涙に触れて、戸惑っていた。','narr');
-  await T.npc('「やだ……どうして、泣いてたんだろう」');
+  await T.npc('「……どうして、泣いてたんだろう」');
   T.sp();
   await T.say('その涙が誰のためのものだったか、もう彼女は知らない。','narr');
-  await T.say('俺は、何も答えなかった。煙を、一口、吸った。', 'narr');
+  await T.say('俺は、何も答えなかった。', 'narr');
   await T.sleep(300);
   await T.dlg('「もう済んだ。帰っていい」');
   T.sp();
@@ -207,9 +207,9 @@ async function eraseEnd(){
   T.sp();
   await T.say('重い扉が閉まった。','narr');
   T.sp();
-  await T.say('これでいい。あの女が、金を払って望んだことだ。', 'narr');
+  await T.say('これでいい。あの女が、大金を払って望んだことだ。', 'narr');
   await T.sleep(250);
-  await T.say('灰皿の中で、煙草の火が小さく爆ぜて消えた。', 'narr');
+  await T.say('灰皿の中で、タバコの火が小さく爆ぜて消えた。', 'narr');
 }
 
 async function keepEnd(){
@@ -243,12 +243,13 @@ async function keepEnd(){
   T.sp();
   await T.say('重い扉が閉まった。','narr');
   T.sp();
-  await T.say('たぶん、三日後に彼女は来ないだろう。', 'narr');
+  await T.say('たぶん、もう、あの女は来ないだろう。', 'narr');
   await T.say('それでいい。', 'narr');
 }
 
 async function epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('俺はまた、端末の前に座る。煙を吐く。','narr');
   T.sp();
@@ -264,7 +265,7 @@ async function epilogue(){
   await T.tap();
 
   await T.say('俺は、記憶屋だ。','narr');
-  await T.say('他人の頭の中を覗いて、いらないものを切り取る。それで飯を食っている。','narr');
+  await T.say('他人の頭の中を覗いて、いらないものを切り取る。それで金を稼いで飯を食っている。','narr');
   T.sp();
   await T.say('誰かの一番大事な記憶も、一番消したい記憶も、この手で扱う。','narr');
   await T.say('だから客には深入りしない。名前も、聞かない。','narr');
@@ -277,7 +278,7 @@ async function epilogue(){
   await T.say('余計なことは考えないことにしている。それが、この仕事を続けるコツだ。','narr');
   T.sp();
   await T.say('端末の緑の光が、静かに瞬いている。','narr');
-  await T.say('俺は軋む椅子に深く身を預けて目を閉じる。また、次の客が来るまで。','narr');
+  await T.say('俺は椅子に深く身を預けて目を閉じる。また、次の客が来るまで。','narr');
   await episodeTransition(
     '[ END OF LOG: EP.0  MEMORY DEALER ]', '記憶屋',
     '[ START LOG: EP.1  EVERLASTING FLOWER ]', '枯れない花');

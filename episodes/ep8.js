@@ -273,6 +273,7 @@ async function ep8KeepEnd(){
 
 async function ep8Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('古い義体の、油と金属の匂いが、店にしばらく残っていた。', 'narr');
   T.sp();

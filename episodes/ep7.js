@@ -232,6 +232,7 @@ async function ep7KeepEnd(){
 
 async function ep7Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('消毒液の匂いが、店にしばらく残っていた。', 'narr');
   T.sp();

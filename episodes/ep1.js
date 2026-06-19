@@ -5,7 +5,7 @@ async function ep1(){
   T.sp();
   await T.say('今夜は、客足が遠い。','narr');
   await T.say('こういう夜は、頭の中が静かすぎて、かえって落ち着かない。', 'narr');
-  await T.say('俺は煙を吐いて、灰皿の縁で、火を転がした。','narr');
+  await T.say('俺は煙を吐いて、灰皿の縁からあふれた吸い殻を転がした。','narr');
   T.sp();
   await T.say('上層では、今夜も誰かが新しい顔を買い、新しい思い出を注文している。','narr');
   await T.say('この世界の人間は、過去を、まるで服のように着替える。','narr');
@@ -34,20 +34,20 @@ async function ep1(){
   T.sp();
   await T.say('俺は知らないふりで煙を吐いた。有名人だろうが、ここではただの客だ。', 'narr');
   await T.dlg('「座ってくれ。料金は前払い。作業が始まれば、取り消しはきかない」');
-  await T.dlg('「お喋りは、手短に」');
+  await T.dlg('「余計なお喋りは、手短に頼む」');
   T.sp();
-  await T.say('老人は軋む椅子に、年老いた関節をいたわるように腰を下ろした。','narr');
+  await T.say('老人は、年老いた関節をいたわるように、椅子に腰を下ろした。','narr');
   await T.say('鞄を膝の上で、両手で抱えている。','narr');
   await T.tap();
 
-  await T.dlg('「用件を聞こう」');
+  await T.dlg('「用件を聞こうか」');
   await T.say('老人はすぐには答えなかった。','narr');
   await T.say('鞄の留め金を、意味もなく、指で撫でている。','narr');
   T.sp();
-  await T.npc('「一人の、女を」');
+  await T.npc('「一人の、女性を」');
   await T.npc('「私の、頭の中から、消してほしい」');
   T.sp();
-  await T.dlg('「それはどういった理由だ」');
+  await T.dlg('「どんな女だ」');
   await T.say('老人は薄く笑った。悲しみよりも、疲れに近い笑みだった。','narr');
   await T.npc('「四十年前にね。若かった。私も、彼女も」');
   await T.npc('「病気だった。長くないと、分かっていた」');
@@ -57,12 +57,12 @@ async function ep1(){
   T.sp();
   await T.tap();
 
-  await T.dlg('「あんた、書いただろう。その女のことを」');
+  await T.dlg('「あんた――書いただろう。その女のことを」');
   await T.say('老人の指が、留め金の上で止まった。','narr');
   T.sp();
   await T.npc('「あんたも……読んだのか」');
   await T.dlg('「読んでない。表紙を、見ただけだ」');
-  await T.dlg('「だが、この街で、あの本を読んでない人間はいても、表紙を見たことのない人間はいない」');
+  await T.dlg('「だが、この街で、あの本を読んでない人間はいても、内容を知らない人間はいない」');
   T.sp();
   await T.say('老人は、長いあいだ、黙っていた。','narr');
   await T.npc('「『枯れない花』」');
@@ -70,14 +70,14 @@ async function ep1(){
   await T.npc('「彼女を、永遠に枯れない花にしてやる。そう言って、書いた」');
   T.sp();
   await T.say('老人は膝の鞄を、そっと開いた。','narr');
-  await T.say('中には、ぼろぼろになった初版が一冊。何千回も開かれた、背の割れた本。','narr');
+  await T.say('中には、ぼろぼろになった本が一冊。何千回も開かれた、背の割れた本。','narr');
   T.sp();
   await T.npc('「おかげで、私は『一冊だけの作家』になった」');
   await T.npc('「以来、三十年。何ひとつ、書けていない」');
   T.sp();
   await T.tap();
 
-  await T.dlg('「忘れたいだけなら、本を捨てればいい。なぜ、記憶まで」');
+  await T.dlg('「忘れたいだけなら、本を捨てればいい。なぜ、記憶まで消す必要がある」');
   await T.npc('「それが――できないんだ」');
   T.sp();
   await T.say('老人は、震える指で本の表紙を撫でた。','narr');
@@ -85,22 +85,22 @@ async function ep1(){
   await T.npc('「私はね、もう一度、書きたいんだ。死ぬ前に、一つでいい」');
   await T.npc('「彼女じゃない、別の物語を。私自身の、最後の本を」');
   await T.npc('「だが、書けない。ペンを取ると、どの一行も、彼女になる」');
-  await T.npc('「四十年だ。何を書こうとしても、結局、彼女が出てくる」');
+  await T.npc('「四十年だ。この四十年、何を書こうとしても、結局、紙の上に出てくるのは、いつも彼女だ」');
   T.sp();
-  await T.say('分かる気がした。こいつにとって、その女はもう記憶じゃない。', 'narr');
+  await T.say('こいつにとって、その女はもう記憶じゃない。', 'narr');
   await T.say('呼吸だ。吸って吐いて、気づけば、そこにいる。', 'narr');
   T.sp();
-  await T.npc('「彼女さえ、消えてくれれば」');
+  await T.npc('「彼女さえ、消えてくれれば……」');
   await T.npc('「私は、やっと、自由に書ける。そう思って、ここへ来た」');
   T.sp();
   await T.tap();
 
-  await T.dlg('「いいのか。出会いも、声も、全部消える。傑作の中身も、もう、分からなくなるぞ」');
+  await T.dlg('「いいのか。出会いも、声も、全部消える。あんたの傑作の中身も、もう、分からなくなるぞ」');
   await T.npc('「構わない。あんな本、私のものじゃない。彼女が、勝手に書かせたんだ」');
   T.sp();
   await T.say('そう言って、老人はまた薄く笑った。','narr');
   await T.say('――嘘だ。', 'narr');
-  await T.say('膝の上の、割れた背表紙。何千回、開いた。その指が何より雄弁だった。', 'narr');
+  await T.say('膝の上の、何千回と開いた割れた背表紙。そして、愛おしそうにその背表紙をさする、震えた指が何より雄弁だった。', 'narr');
   T.sp();
   await T.say('だが、客が望むなら、消す。それが仕事だ。', 'narr');
   T.sp();
@@ -118,7 +118,7 @@ async function ep1(){
   await Scene.addText('[ WARNING: ARCHIVE HEAVILY REWRITTEN ]', '#ff2244');
   await T.sleep(300);
 
-  await T.say('妙だ。これだけ古い記憶なのに、輪郭がやけに鮮明すぎる。', 'narr');
+  await T.say('これだけ古い記憶なのに、輪郭がやけに鮮明すぎる。', 'narr');
   await T.say('――何度も、何度も、磨き直された記憶。本物よりはるかに本物らしい。', 'narr');
   T.sp();
 
@@ -157,7 +157,7 @@ async function ep1(){
   await T.say('老人の頬が、痙攣するようにわずかに引きつった。','narr');
   T.sp();
 
-  await Scene.addText('...本は飛ぶように売れ、何度も版を重ねた。', '#44ff88', 2);
+  await Scene.addText('...出版されると、本は飛ぶように売れ、繰り返し版を重ねた。', '#44ff88', 2);
   await Scene.addText('...みんなが「さわ」を愛した。', '#44ff88', 2);
   await Scene.addText('...だが、私が思い出すのは、本の「さわ」ばかりだ。', '#44ff88', 2);
   await Scene.addText('...本物の、最後の、苦しんだ彼女の顔は――', '#44ff88', 2);
@@ -183,15 +183,15 @@ async function ep1(){
   await T.dlg('「読ませてもらった」');
   await T.say('俺は新しいタバコに火をつけ、少し間を置いた。','narr');
   T.sp();
-  await T.dlg('「あんたが消したいのは、女じゃない。本の中の、花のほうだ」');
+  await T.dlg('「あんたが消したいのは、現実にいた女じゃない。本の中の女のほうだ」');
   await T.dlg('「あんたは、本物のさわを、取り戻したいんだろう」');
   T.sp();
   await T.say('老人の目が大きく見開かれた。','narr');
-  await T.say('そして、くしゃりと、歪んだ。','narr');
+  await T.say('そして、くしゃりと、表情が歪んだ。','narr');
   T.sp();
   await T.npc('「……できるのか。そんなことが」');
   await T.dlg('「無理だね」');
-  await T.npc('「四十年だ。本の中の彼女と、本物の彼女は、あんたの記憶の中で、もう根まで絡まってる。そこから花だけ抜くことはできない」');
+  await T.dlg('「四十年だ。本の中の彼女と、本物の彼女は、あんたの記憶の中で、もう根元まで絡まってる。そこから一方だけを抜くことはできない」');
   await T.dlg('「消すなら、全部だ。さわも、本も、彼女を愛したことも。何もかも、まとめて、無くなる」');
   T.sp();
   await T.say('老人は膝の上の、割れた背表紙を見つめていた。','narr');
@@ -230,7 +230,7 @@ async function ep1EraseEnd(){
   await T.say('俺は古いポートから、ゆっくりとケーブルを引き抜いた。','narr');
   await T.sleep(280);
   await T.say('老人は顔を上げた。','narr');
-  await T.say('憑き物が落ちたような、おだやかな顔、しかし、空っぽの顔だった。','narr');
+  await T.say('おだやかな顔、しかし、空っぽの顔だった。','narr');
   T.sp();
   await T.npc('「……はて。私は、何をしに、ここへ」');
   await T.say('老人は、膝の上の、ぼろぼろの本に気づいた。','narr');
@@ -243,7 +243,7 @@ async function ep1EraseEnd(){
   await T.npc('「……よく、書けている。何で私はこんなものを思いついたんだろうね」');
   T.sp();
   await T.say('俺は答えなかった。', 'narr');
-  await T.say('そいつはもう、自分の人生で一番美しいものを、他人の本として読んでいた。', 'narr');
+  await T.say('そいつはもう、自分の人生で一番美しかったはずのものを、他人の本として読んでいた。', 'narr');
   T.sp();
   await T.say('老人は本を鞄にしまい、丁寧に、留め金を閉じた。','narr');
   await T.npc('「邪魔をした。なんだか、ずいぶん、身軽になった気がするよ」');
@@ -281,14 +281,14 @@ async function ep1KeepEnd(){
   await T.say('俺は膝の上の、割れた背表紙を顎で指した。','narr');
   T.sp();
   await T.dlg('「そこにいる。あんたが、何千回もページを開いた。最後の顔を書かなかったのも、あんたなりの、優しさだろう」');
-  await T.dlg('「綺麗なほうを、遺してやりたかった。それは、嘘とは言わない」');
+  await T.dlg('「綺麗なほうを、遺してやりたかったんだろう。それは、嘘とは言わない」');
   T.sp();
   await T.say('老人は本を、抱きしめるように胸に寄せた。','narr');
   await T.say('皺だらけの手の甲に、ぽつりと、雫が落ちた。雨ではなかった。','narr');
   T.sp();
-  await T.npc('「……これを、抱えたまま、死ねと言うのか」');
-  await T.dlg('「ああ。それを抱えてここから帰り、それを抱えて墓場に入れ」');
-  await T.dlg('「消すのは、いつでもできる。だが、消したら、二度と、その本は抱けない」');
+  await T.npc('「私に……これを抱えたまま、死ねと言うのか」');
+  await T.dlg('「ああ。それを抱えてここから出て行き、それを抱えて墓場に入れ」');
+  await T.dlg('「消すのは、いつでもできる。だが、消したら、二度と、その本を開くことはできない」');
   T.sp();
   await T.tap();
 
@@ -304,16 +304,17 @@ async function ep1KeepEnd(){
   await T.say('重い扉が閉まった。','narr');
   Scene.set('IDLE');
   T.sp();
-  await T.say('老人に最後の一ページが書けるかどうかは、分からない。', 'narr');
+  await T.say('老人に最後の一ページが書けるかどうかは、俺には分からない。', 'narr');
   await T.say('だが、書こうとして死ぬなら、それは、悪い死に方じゃない。', 'narr');
   await T.say('――たぶん、な。', 'narr');
 }
 
 async function ep1Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
-  await T.say('俺はまた、端末の前に座る。煙を吐く。','narr');
-  await T.say('雨はまだ、降っているらしい。配管が、低く鳴っていた。','narr');
+  await T.say('俺はまた、端末の前に座り煙を吐く。','narr');
+  await T.say('雨はまだ降っているらしい。配管が、低く鳴っていた。','narr');
   T.sp();
   await T.tap();
 
@@ -323,7 +324,7 @@ async function ep1Epilogue(){
   T.sp();
   await T.say('記憶ってのは、厄介だ。','narr');
   await T.say('重すぎて、捨てたくなる。捨てたら、空っぽで、また欲しくなる。','narr');
-  await T.say('幸福を買う上層も、忘却を買う下層も、結局は同じ椅子の上で迷っている。','narr');
+  await T.say('幸福を買う上層も、忘却を買う下層も、結局は同じ椅子の上で迷っているのだ。','narr');
   T.sp();
   await T.tap();
 
@@ -333,11 +334,11 @@ async function ep1Epilogue(){
   T.sp();
   await T.say('俺は何も遺さない。他人の記憶を覗いて、いらないものを切り取る。それだけだ。','narr');
   await T.say('遺すものがなければ、失くすものも、ない。','narr');
-  await T.say('それが、この仕事を続けるコツだ。','narr');
+  await T.say('それが、この仕事を長く続けるコツだ。','narr');
   T.sp();
   await T.tap();
 
-  await T.say('俺はタバコを消した。','narr');
+  await T.say('俺はタバコの火を消した。','narr');
   await T.say('机の隅に、さっきの老人が忘れていったのか――一枚の栞が落ちていた。','narr');
   await T.say('押し花の栞だった。とうに色の褪せた、名も知れない小さな花。','narr');
   T.sp();
@@ -346,8 +347,8 @@ async function ep1Epilogue(){
   await T.say('俺はそれを、引き出しの奥に、そっとしまった。','narr');
   T.sp();
   await T.say('配管を伝っていた雨音が、いつのまにか止んでいた。','narr');
-  await T.say('静かすぎる夜だ。だが、こういう夜にも、いずれ誰かがノックする。','narr');
-  await T.say('俺は新しい煙に火をつけて、その時を待つ。','narr');
+  await T.say('静かすぎる夜だ。だが、こういう夜にも、誰かが店の扉をノックする。','narr');
+  await T.say('俺は新しいタバコに火をつけて、その時を待つ。','narr');
   await episodeTransition(
     '[ END OF LOG: EP.1  EVERLASTING FLOWER ]', '枯れない花',
     '[ START LOG: EP.2  BEYOND THE GLASS ]', 'ガラスの向こう');

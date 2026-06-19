@@ -200,6 +200,7 @@ async function ep10KeepEnd(){
 
 async function ep10Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('古い端末の焼ける匂いが、しばらく店に残っていた。俺の店の匂いと、同じ匂いだ。','narr');
   T.sp();

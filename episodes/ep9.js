@@ -204,6 +204,7 @@ async function ep9KeepEnd(){
 
 async function ep9Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('婆さんの前掛けの、古い洗剤の匂いが、店にしばらく残っていた。','narr');
   T.sp();

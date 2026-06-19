@@ -143,6 +143,17 @@ body {
   margin-bottom: 10px;
   overflow: hidden;
 }
+#scene-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 3px
+  );
+  pointer-events: none;
+  z-index: 6;
+}
 #cvs-overlay {
   position: absolute;
   top: 0; left: 8px; right: 8px; bottom: 0;
@@ -394,6 +405,17 @@ body {
   transition: opacity 1s ease;
 }
 #title-screen.hide { opacity: 0; pointer-events: none; }
+#title-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
 #title-bg {
   position: absolute;
   inset: 0;
@@ -437,6 +459,8 @@ body {
   white-space: nowrap;
   color: var(--bright);
   text-shadow: 0 0 8px rgba(0,255,85,0.7), 0 0 18px rgba(0,255,85,0.35);
+  border-bottom: 3px solid var(--bright);
+  padding-bottom: 3px;
   margin-bottom: 52px;
   will-change: opacity;
 }
@@ -643,22 +667,61 @@ function zap() {
 // ═══════════════════════════════════════════════
 // BGM
 // ═══════════════════════════════════════════════
-let bgm = null;
+const BGM_VOL = 0.35;
+let bgmCurrent = null;
+let bgmFadeTimer = null;
 
-function startBgm() {
-  if (!bgm) {
-    bgm = new Audio('assets/room_bg.wav');
-    bgm.loop = true;
-    bgm.volume = 0.35;
-  }
-  bgm.play().catch(() => {});
+function bgmFadeOut(audio, duration) {
+  return new Promise(resolve => {
+    clearInterval(bgmFadeTimer);
+    if (!audio || audio.paused) { resolve(); return; }
+    const steps = 20;
+    const dec = audio.volume / steps;
+    const iv = duration / steps;
+    bgmFadeTimer = setInterval(() => {
+      audio.volume = Math.max(0, audio.volume - dec);
+      if (audio.volume <= 0) {
+        clearInterval(bgmFadeTimer);
+        audio.pause();
+        audio.currentTime = 0;
+        resolve();
+      }
+    }, iv);
+  });
 }
 
-function stopBgm() {
-  if (!bgm) return;
-  bgm.pause();
-  bgm.currentTime = 0;
+function bgmFadeIn(audio, duration) {
+  return new Promise(resolve => {
+    clearInterval(bgmFadeTimer);
+    audio.volume = 0;
+    audio.play().catch(() => {});
+    const steps = 20;
+    const inc = BGM_VOL / steps;
+    const iv = duration / steps;
+    bgmFadeTimer = setInterval(() => {
+      audio.volume = Math.min(BGM_VOL, audio.volume + inc);
+      if (audio.volume >= BGM_VOL) {
+        clearInterval(bgmFadeTimer);
+        audio.volume = BGM_VOL;
+        resolve();
+      }
+    }, iv);
+  });
 }
+
+async function bgmFadeTo(src, duration = 700) {
+  const prev = bgmCurrent;
+  bgmCurrent = null;
+  await bgmFadeOut(prev, duration);
+  if (!src) return;
+  const next = new Audio(src);
+  next.loop = true;
+  bgmCurrent = next;
+  await bgmFadeIn(next, duration);
+}
+
+function startBgm() { bgmFadeTo('assets/room_bg.mp3'); }
+function stopBgm()  { bgmFadeTo(null); }
 
 // ═══════════════════════════════════════════════
 // CLOCK
@@ -733,6 +796,7 @@ function linkOn() {
   document.getElementById('clk-sep').style.display = 'none';
   document.getElementById('clk').style.display = 'none';
   document.getElementById('sig').innerHTML = '<span class="amber">[LINKED]</span>';
+  bgmFadeTo('assets/link_bg.mp3', 900);
 }
 function linkOff() {
   pulseOn = false;
@@ -740,6 +804,7 @@ function linkOff() {
   document.getElementById('clk-sep').style.display = '';
   document.getElementById('clk').style.display = '';
   document.getElementById('sig').innerHTML = '<span class="bright">[ONLINE]</span>';
+  bgmFadeTo('assets/room_bg.mp3', 900);
 }
 
 // ═══════════════════════════════════════════════

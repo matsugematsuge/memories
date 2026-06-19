@@ -262,6 +262,7 @@ async function ep3DenyEnd(){
 
 async function ep3Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('男が出ていって、店はまた静かになった。','narr');
   await T.say('俺は、奥の棚の前にしばらく立っていた。','narr');

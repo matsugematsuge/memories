@@ -221,6 +221,7 @@ async function ep6KeepEnd(){
 
 async function ep6Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('油の匂いが、椅子に染みついて残った。','narr');
   await T.say('遠くで、まだ、機械が鳴っている。','narr');

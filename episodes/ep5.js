@@ -212,6 +212,7 @@ async function ep5RefuseEnd(){
 
 async function ep5Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('店が、やけに静かだった。','narr');
   await T.say('子供が一人、いなくなっただけで、こんなにも。','narr');

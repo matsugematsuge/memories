@@ -234,6 +234,7 @@ async function ep4KeepEnd(){
 
 async function ep4Epilogue(){
   Scene.set('IDLE');
+  bgmFadeTo('assets/end_bg.mp3');
   await T.sleep(500);
   await T.say('香水の匂いだけが、店にしばらく残っていた。','narr');
   await T.say('俺は煙を深く吸い込む。','narr');
