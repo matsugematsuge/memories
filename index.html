@@ -742,8 +742,8 @@ function updateAudioIcons() {
 function toggleBgm() {
   bgmEnabled = !bgmEnabled;
   if (!bgmEnabled) {
-    const prev = bgmCurrent; bgmCurrent = null;
-    bgmFadeOut(prev, 400);
+    clearInterval(bgmFadeTimer);
+    if (bgmCurrent) { bgmCurrent.pause(); }
     if (rainGain && AC) rainGain.gain.setTargetAtTime(0, AC.currentTime, 0.15);
   } else {
     if (bgmCurrentSrc) bgmFadeTo(bgmCurrentSrc, 400);
@@ -765,8 +765,9 @@ function bgmFadeOut(audio, duration) {
     const iv = duration / steps;
     bgmFadeTimer = setInterval(() => {
       audio.volume = Math.max(0, audio.volume - dec);
-      if (audio.volume <= 0) {
+      if (audio.volume < 0.005) {
         clearInterval(bgmFadeTimer);
+        audio.volume = 0;
         audio.pause();
         audio.currentTime = 0;
         resolve();
