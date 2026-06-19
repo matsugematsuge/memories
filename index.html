@@ -112,18 +112,24 @@ body {
   background: var(--green);
 }
 
-#pulse-wrap {
-  flex: 1;
-  height: 28px;
-  display: none;
-  position: relative;
+#audio-toggles {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
-#pulse-wrap.on { display: block; }
-#pulse-cvs {
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
+.atgl {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  background: none;
+  border: 1px solid;
+  padding: 3px 5px;
+  cursor: pointer;
+  letter-spacing: 0;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s, opacity 0.15s;
 }
+.atgl.on  { color: var(--green); border-color: var(--mid); }
+.atgl.off { color: #1a281a; border-color: #0a120a; opacity: 0.4; }
 
 #clk {
   font-size: 11px;
@@ -547,8 +553,12 @@ body {
     </span>
     <span class="si sep">|</span>
     <span class="si" id="sig"><span class="bright">[ONLINE]</span></span>
-    <div id="pulse-wrap"><canvas id="pulse-cvs"></canvas></div>
-    <span class="si sep" id="clk-sep">|</span>
+    <div style="flex:1"></div>
+    <div id="audio-toggles">
+      <button id="btn-bgm" class="atgl on">BGM</button>
+      <button id="btn-se"  class="atgl on">SE</button>
+    </div>
+    <span class="si sep">|</span>
     <span class="si" id="clk">--:--</span>
   </div>
 
@@ -635,7 +645,7 @@ function bootAudio() {
 }
 
 function tick(freq) {
-  if (!AC) return;
+  if (!AC || !seEnabled) return;
   try {
     const o = AC.createOscillator(), g = AC.createGain();
     o.connect(g); g.connect(AC.destination);
@@ -648,7 +658,7 @@ function tick(freq) {
 }
 
 function knock() {
-  if (!AC) return;
+  if (!AC || !seEnabled) return;
   try {
     const len = AC.sampleRate * 0.12;
     const buf = AC.createBuffer(1, len, AC.sampleRate);
@@ -662,7 +672,7 @@ function knock() {
 }
 
 function zap() {
-  if (!AC) return;
+  if (!AC || !seEnabled) return;
   try {
     const o = AC.createOscillator(), g = AC.createGain();
     o.connect(g); g.connect(AC.destination);
@@ -678,7 +688,7 @@ function zap() {
 
 // メニュー選択音「ピッ」
 function beep() {
-  if (!AC) return;
+  if (!AC || !seEnabled) return;
   try {
     const o = AC.createOscillator(), g = AC.createGain();
     o.connect(g); g.connect(AC.destination);
@@ -728,6 +738,30 @@ function stopRain() {
 const BGM_VOL = 0.2;
 let bgmCurrent = null;
 let bgmFadeTimer = null;
+let bgmEnabled = true;
+let seEnabled  = true;
+let bgmCurrentSrc = null;
+
+function updateAudioIcons() {
+  document.getElementById('btn-bgm').className = 'atgl ' + (bgmEnabled ? 'on' : 'off');
+  document.getElementById('btn-se').className  = 'atgl ' + (seEnabled  ? 'on' : 'off');
+}
+function toggleBgm() {
+  bgmEnabled = !bgmEnabled;
+  if (!bgmEnabled) {
+    const prev = bgmCurrent; bgmCurrent = null;
+    bgmFadeOut(prev, 400);
+    if (rainGain && AC) rainGain.gain.setTargetAtTime(0, AC.currentTime, 0.15);
+  } else {
+    if (bgmCurrentSrc) bgmFadeTo(bgmCurrentSrc, 400);
+    if (rainSrc && rainGain && AC) rainGain.gain.setTargetAtTime(0.035, AC.currentTime, 0.3);
+  }
+  updateAudioIcons();
+}
+function toggleSe() {
+  seEnabled = !seEnabled;
+  updateAudioIcons();
+}
 
 function bgmFadeOut(audio, duration) {
   return new Promise(resolve => {
@@ -768,6 +802,11 @@ function bgmFadeIn(audio, duration) {
 }
 
 async function bgmFadeTo(src, duration = 700) {
+  bgmCurrentSrc = src;
+  if (!bgmEnabled) {
+    if (bgmCurrent) { bgmCurrent.pause(); bgmCurrent = null; }
+    return;
+  }
   const prev = bgmCurrent;
   bgmCurrent = null;
   await bgmFadeOut(prev, duration);
@@ -797,71 +836,12 @@ function startClock() {
   up(); setInterval(up, 1000);
 }
 
-// ═══════════════════════════════════════════════
-// PULSE
-// ═══════════════════════════════════════════════
-let pulseOn = false, pulsePhase = 0, pulseData = [];
-let pulseEnergy = 0, pulseClock = 0, pulseNext = 20;
-
-function initPulse() {
-  const wrap = document.getElementById('pulse-wrap');
-  const cvs  = document.getElementById('pulse-cvs');
-  const ctx  = cvs.getContext('2d');
-
-  function resize() {
-    cvs.width  = wrap.clientWidth  || 100;
-    cvs.height = wrap.clientHeight || 28;
-  }
-  resize();
-  new ResizeObserver(resize).observe(wrap);
-
-  (function loop() {
-    requestAnimationFrame(loop);
-    if (!pulseOn) { ctx.clearRect(0,0,cvs.width,cvs.height); return; }
-    const W = cvs.width, H = cvs.height;
-    ctx.clearRect(0,0,W,H);
-
-    pulseClock++;
-    pulseEnergy *= 0.84;
-    if (pulseClock >= pulseNext) {
-      pulseClock = 0;
-      pulseNext = 22 + Math.random() * 60;
-      pulseEnergy = 0.65 + Math.random() * 0.7;
-    }
-    const spike = pulseEnergy * Math.sin(pulseClock * 1.5) * Math.exp(-pulseClock * 0.11);
-    pulseData.push(
-      spike +
-      Math.sin(pulsePhase * 0.11) * 0.07 +
-      (Math.random() - 0.5) * 0.04
-    );
-    if (pulseData.length > W) pulseData.shift();
-    pulsePhase += 0.22;
-
-    ctx.strokeStyle = '#00ff55';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = 0; i < pulseData.length; i++) {
-      const x = i, y = H/2 - pulseData[i] * (H/2 - 2);
-      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-  })();
-}
 
 function linkOn() {
-  pulseOn = true; pulseData = []; pulsePhase = 0;
-  pulseEnergy = 0; pulseClock = 0; pulseNext = 20;
-  document.getElementById('pulse-wrap').classList.add('on');
-  document.getElementById('clk-sep').style.display = 'none';
-  document.getElementById('clk').style.display = 'none';
   document.getElementById('sig').innerHTML = '<span class="amber">[LINKED]</span>';
   bgmFadeTo('assets/link_bg.mp3', 900);
 }
 function linkOff() {
-  pulseOn = false;
-  document.getElementById('pulse-wrap').classList.remove('on');
-  document.getElementById('clk-sep').style.display = '';
-  document.getElementById('clk').style.display = '';
   document.getElementById('sig').innerHTML = '<span class="bright">[ONLINE]</span>';
   bgmFadeTo('assets/room_bg.mp3', 900);
 }
@@ -1591,7 +1571,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   document.getElementById('app').addEventListener('click', e=>{
     bootAudio();   // タップ毎に音声を起こす（モバイルのsuspended対策）
-    if(e.target.classList.contains('cbtn') || e.target.classList.contains('tmenu')) return;
+    if(e.target.classList.contains('cbtn') || e.target.classList.contains('tmenu') || e.target.classList.contains('atgl')) return;
     T.handleTap();
   });
 
@@ -1624,9 +1604,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   startClock();
-  initPulse();
   initRain();
   showTitle();
+
+  document.getElementById('btn-bgm').addEventListener('click', e => { e.stopPropagation(); bootAudio(); toggleBgm(); });
+  document.getElementById('btn-se').addEventListener('click',  e => { e.stopPropagation(); bootAudio(); toggleSe(); });
 
   // ▼ 開発用：タイトルを飛ばして切り替え演出を見る場合
   // hideTitle(); (async()=>{ T.clear(); Scene.clearText(); Scene.set('IDLE'); await epilogue(); await ep1(); })();
