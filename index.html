@@ -1429,7 +1429,7 @@ function epType(el, text, delay) {
 // ═══════════════════════════════════════════════
 // LOADING BAR
 // ═══════════════════════════════════════════════
-function showLoadingBar() {
+function showLoadingBar(onFadeOut) {
   return new Promise(resolve => {
     const screen = document.getElementById('loading-screen');
     const fill   = document.getElementById('loading-bar-fill');
@@ -1440,6 +1440,7 @@ function showLoadingBar() {
     fill.style.transition = 'width 1.8s cubic-bezier(0.15,0,0.4,1)';
     fill.style.width = '100%';
     setTimeout(() => {
+      if (onFadeOut) onFadeOut();   // ローディング画面が消え始める前にクリーンアップ
       screen.classList.remove('show');
       setTimeout(resolve, 550);
     }, 2100);
@@ -1529,27 +1530,25 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   await new Promise(r => { btnEl.onclick = () => r(); });
 
   // 9. BGMを次話用にフェード開始・ローディングバー表示
+  // ローディング画面がフェードアウトし始める瞬間にエンドカードを片付ける
   bgmFadeTo('assets/room_bg.mp3');
-  await showLoadingBar();
-
-  // 10. エンドカードをリセット（ローディング画面の裏で片付ける）
-  card.style.transition = 'none';
-  card.style.opacity = '0';
-  card.style.pointerEvents = 'none';
-  card.classList.remove('show');
-  nextEl.classList.remove('show');
-  nextEl.style.opacity = ''; nextEl.style.transition = ''; nextEl.innerHTML = '';
-  btnEl.classList.remove('show');
-  logEl.style.transition = ''; logEl.style.opacity = '';
-  ruleEl.style.transition = ''; ruleEl.style.opacity = '';
-  epnumEl.style.transition = ''; epnumEl.style.opacity = '';
-  card.style.transition = ''; card.style.opacity = ''; card.style.pointerEvents = '';
-
-  // テキストエリアをクリア・復元
-  T.clear();
-  scroll.style.transition = '';
-  scroll.style.opacity = '1';
-  Scene.clearText();
+  await showLoadingBar(() => {
+    card.style.transition = 'none';
+    card.style.opacity = '0';
+    card.style.pointerEvents = 'none';
+    card.classList.remove('show');
+    nextEl.classList.remove('show');
+    nextEl.style.opacity = ''; nextEl.style.transition = ''; nextEl.innerHTML = '';
+    btnEl.classList.remove('show');
+    logEl.style.transition = ''; logEl.style.opacity = '';
+    ruleEl.style.transition = ''; ruleEl.style.opacity = '';
+    epnumEl.style.transition = ''; epnumEl.style.opacity = '';
+    card.style.transition = ''; card.style.opacity = ''; card.style.pointerEvents = '';
+    T.clear();
+    scroll.style.transition = '';
+    scroll.style.opacity = '1';
+    Scene.clearText();
+  });
 }
 
 // ═══════════════════════════════════════════════
