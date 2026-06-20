@@ -1353,15 +1353,24 @@ const T = (() => {
     typing=true; skip=false;
     const cur=document.createElement('span'); cur.className='cursor'; el.appendChild(cur);
     for(let i=0;i<text.length;i++){
-      if(skip){ cur.insertAdjacentText('beforebegin', text.slice(i)); break; }
+      if(skip){
+        cur.insertAdjacentText('beforebegin', text.slice(i));
+        bot();  // skip一括表示後もスクロールを末尾に合わせる
+        break;
+      }
       cur.insertAdjacentText('beforebegin',text[i]);
       if(!' '.includes(text[i])) tick(820+Math.random()*160);
       bot();
-      let d=spd||70;
-      if('。、！？…'.includes(text[i])) d*=4;
-      else if('「」』』'.includes(text[i])) d*=1.5;
+      // mid-textタップ待ち直前は余分なdelayを入れない
+      // （sleep中のタップがskipになり「反応しない→もう一度タップ」になるのを防ぐ）
+      const isMidTap = (text[i]==='。'||text[i]==='」') && i < text.length-1;
+      let d = spd||70;
+      if (!isMidTap) {
+        if ('。、！？…'.includes(text[i])) d*=4;
+        else if ('「」』』'.includes(text[i])) d*=1.5;
+      }
       await sleep(d);
-      if ((text[i]==='。'||text[i]==='」') && i < text.length-1) {
+      if (isMidTap) {
         typing=false; waitTap=true;
         await new Promise(r=>{ tapCb=r; });
         waitTap=false; typing=true; skip=false;
