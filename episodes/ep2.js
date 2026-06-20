@@ -9,13 +9,13 @@ async function ep2(){
   T.sp();
   await T.tap();
 
-  await Scene.load('CLIENT_ep2');
+  await Scene.load('CLIENT_ep0');
   for(let i=0;i<3;i++){ knock(); await T.sleep(i===0?0:430); }
   await T.sleep(300);
   await T.say('ノックは三回。労働で固まった、節くれだった指の音だった。','narr');
   await T.dlg('「開いてる」');
   T.sp();
-  Scene.set('CLIENT_ep2');
+  Scene.set('CLIENT_ep0');
   await T.sleep(400);
   await T.say('入ってきたのは五十がらみの男だった。','narr');
   await T.say('色の褪せた作業着。腰には、まだ命綱の金具をぶら下げたまま。','narr');
