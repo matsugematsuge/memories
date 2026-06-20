@@ -394,6 +394,40 @@ body {
 #ep-end-btn.show { opacity: 1; animation: fade 1.6s ease infinite; }
 #ep-end-btn:active { transform: scale(0.96); }
 
+/* ── LOADING SCREEN ─────────────────────────── */
+#loading-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 175;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  gap: 18px;
+}
+#loading-screen.show { opacity: 1; pointer-events: auto; }
+#loading-msg {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--mid);
+  letter-spacing: 2px;
+}
+#loading-bar-wrap {
+  width: 160px;
+  height: 5px;
+  border: 1px solid var(--dim);
+  background: #000;
+}
+#loading-bar-fill {
+  height: 100%;
+  background: var(--green);
+  width: 0%;
+}
+
 /* ── TITLE SCREEN ────────────────────────────── */
 #title-screen {
   position: absolute;
@@ -590,6 +624,12 @@ body {
     <div id="ep-end-epnum"></div>
     <div id="ep-end-next"></div>
     <button id="ep-end-btn">&rarr;</button>
+  </div>
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div id="loading-msg">LOADING...</div>
+    <div id="loading-bar-wrap"><div id="loading-bar-fill"></div></div>
   </div>
 
   <!-- TITLE SCREEN -->
@@ -1354,59 +1394,110 @@ function loadProgress(){
 }
 
 // ═══════════════════════════════════════════════
+// LOADING BAR
+// ═══════════════════════════════════════════════
+function showLoadingBar() {
+  return new Promise(resolve => {
+    const screen = document.getElementById('loading-screen');
+    const fill   = document.getElementById('loading-bar-fill');
+    screen.classList.add('show');
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    void fill.offsetWidth;
+    fill.style.transition = 'width 1.8s cubic-bezier(0.15,0,0.4,1)';
+    fill.style.width = '100%';
+    setTimeout(() => {
+      screen.classList.remove('show');
+      setTimeout(resolve, 550);
+    }, 2100);
+  });
+}
+
+// ═══════════════════════════════════════════════
 // EPISODE TRANSITION
 // ═══════════════════════════════════════════════
 async function episodeTransition(endLabel, endJp, startLabel, startJp) {
-  const scroll  = document.getElementById('txt-scroll');
-  const card    = document.getElementById('ep-end');
-  const nextEl  = document.getElementById('ep-end-next');
-  const btnEl   = document.getElementById('ep-end-btn');
+  const scroll   = document.getElementById('txt-scroll');
+  const card     = document.getElementById('ep-end');
+  const logEl    = document.getElementById('ep-end-log');
+  const ruleEl   = document.getElementById('ep-end-rule');
+  const epnumEl  = document.getElementById('ep-end-epnum');
+  const nextEl   = document.getElementById('ep-end-next');
+  const btnEl    = document.getElementById('ep-end-btn');
 
-  // EP番号を抽出
   const endM   = (endLabel   || '').match(/EP\.(\d+)/);
   const startM = (startLabel || '').match(/EP\.(\d+)/);
-  const endNum   = endM   ? 'EP.' + endM[1]   : '';
+  const endNum   = endM   ? 'EP.' + endM[1] : '';
   const startNum = startM ? 'EP.' + startM[1] : '';
 
-  // テキストを1.4秒でフェードアウト
+  // 1. テキストを1.4sでフェードアウト
   scroll.style.transition = 'opacity 1.4s ease';
   scroll.style.opacity = '0';
   await new Promise(r => setTimeout(r, 1400));
 
-  // 内容をセット（next・btnは初期非表示）
-  document.getElementById('ep-end-log').textContent   = '[ END OF LOG: ]';
-  document.getElementById('ep-end-epnum').textContent = endNum + (endJp ? '  ' + endJp : '');
+  // 2. コンテンツをセット・全要素を不可視に
+  logEl.textContent   = '[ END OF LOG: ]';
+  logEl.style.transition = 'none'; logEl.style.opacity = '0';
+  ruleEl.style.transition = 'none'; ruleEl.style.opacity = '0';
+  epnumEl.textContent = endNum + (endJp ? '  ' + endJp : '');
+  epnumEl.style.transition = 'none'; epnumEl.style.opacity = '0';
   nextEl.innerHTML = startNum && startJp
     ? '[ NEXT EPISODE ' + startNum + ' ]<br><span style="font-family:\'DotGothic16\',monospace;font-size:16px;">' + startJp + '</span>'
     : '[ NEXT EPISODE ]';
   nextEl.classList.remove('show');
   btnEl.classList.remove('show');
 
-  // エンドカードをフェードイン
-  card.classList.add('show');
+  // カード背景を即時表示（暗転）
+  card.style.transition = 'none';
+  card.style.opacity = '1';
+  card.style.pointerEvents = 'auto';
 
-  // 1.4秒後に NEXT ラベルとボタンを出現
-  await new Promise(r => setTimeout(r, 1400));
+  // 3. 暗転で間を置く（1.5s）
+  await new Promise(r => setTimeout(r, 1500));
+
+  // 4. [ END OF LOG: ] をじんわり表示
+  logEl.style.transition = 'opacity 1.0s ease';
+  logEl.style.opacity = '0.85';
+  await new Promise(r => setTimeout(r, 1800));
+
+  // 5. 区切り線
+  ruleEl.style.transition = 'opacity 0.6s ease';
+  ruleEl.style.opacity = '0.5';
+  await new Promise(r => setTimeout(r, 900));
+
+  // 6. エピソードタイトル
+  epnumEl.style.transition = 'opacity 1.0s ease';
+  epnumEl.style.opacity = '1';
+  await new Promise(r => setTimeout(r, 1800));
+
+  // 7. NEXT EPISODE とボタンを出現
   nextEl.classList.add('show');
   btnEl.classList.add('show');
 
-  // ボタンが押されるまで待機
+  // 8. ボタンが押されるまで待機
   await new Promise(r => { btnEl.onclick = () => r(); });
 
-  // エンドカードをフェードアウト
+  // 9. BGMを次話用にフェード開始・ローディングバー表示
+  bgmFadeTo('assets/room_bg.mp3');
+  await showLoadingBar();
+
+  // 10. エンドカードをリセット（ローディング画面の裏で片付ける）
+  card.style.transition = 'none';
+  card.style.opacity = '0';
+  card.style.pointerEvents = 'none';
   card.classList.remove('show');
   nextEl.classList.remove('show');
   btnEl.classList.remove('show');
-  await new Promise(r => setTimeout(r, 1400));
+  logEl.style.transition = ''; logEl.style.opacity = '';
+  ruleEl.style.transition = ''; ruleEl.style.opacity = '';
+  epnumEl.style.transition = ''; epnumEl.style.opacity = '';
+  card.style.transition = ''; card.style.opacity = ''; card.style.pointerEvents = '';
 
   // テキストエリアをクリア・復元
   T.clear();
   scroll.style.transition = '';
   scroll.style.opacity = '1';
   Scene.clearText();
-
-  // 次のエピソードへ向けてBGMを店内へ戻す
-  bgmFadeTo('assets/room_bg.mp3');
 }
 
 // ═══════════════════════════════════════════════
