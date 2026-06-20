@@ -1533,22 +1533,23 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // ローディング画面がフェードアウトし始める瞬間にエンドカードを片付ける
   bgmFadeTo('assets/room_bg.mp3');
   await showLoadingBar(() => {
-    card.style.transition = 'none';
-    card.style.opacity = '0';
-    card.style.pointerEvents = 'none';
-    card.classList.remove('show');
+    // display:none で完全に消す（opacityだとtransitionが残って見えることがある）
+    card.style.display = 'none';
     nextEl.classList.remove('show');
     nextEl.style.opacity = ''; nextEl.style.transition = ''; nextEl.innerHTML = '';
     btnEl.classList.remove('show');
     logEl.style.transition = ''; logEl.style.opacity = '';
     ruleEl.style.transition = ''; ruleEl.style.opacity = '';
     epnumEl.style.transition = ''; epnumEl.style.opacity = '';
-    card.style.transition = ''; card.style.opacity = ''; card.style.pointerEvents = '';
     T.clear();
     scroll.style.transition = '';
     scroll.style.opacity = '1';
     Scene.clearText();
   });
+  // ローディング後にep-endを元のスタイルに戻す（次回用）
+  card.style.display = '';
+  card.style.opacity = '';
+  card.style.pointerEvents = '';
 }
 
 // ═══════════════════════════════════════════════
