@@ -1371,6 +1371,7 @@ const T = (() => {
     async err(t){  return this.say(t,'err',16); },
     sp(){ addLine('sp'); },
     clear(){ scroll.innerHTML=''; },
+    reset(){ scroll.innerHTML=''; typing=false; skip=false; waitTap=false; tapCb=null; },
     sleep,
     async tap(){
       waitTap=true;
@@ -1413,17 +1414,29 @@ function loadProgress(){
 // ═══════════════════════════════════════════════
 // EP END CARD: タイプライター
 // ═══════════════════════════════════════════════
-function epType(el, text, delay) {
+// 全文字を透明spanで埋める（高さ確保）
+function epFill(el, text) {
+  el.innerHTML = Array.from(text).map(ch => {
+    const s = ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch;
+    return `<span style="opacity:0">${s}</span>`;
+  }).join('');
+}
+// spanを1文字ずつ表示（レイアウトずれなし）
+function epReveal(el, text, delay) {
   return new Promise(resolve => {
-    el.textContent = '';
+    const spans = el.querySelectorAll('span');
     let i = 0;
     const iv = setInterval(() => {
-      el.textContent += text[i];
+      spans[i].style.opacity = '';
       if (!' 　'.includes(text[i])) tick(820 + Math.random() * 160);
       i++;
-      if (i >= text.length) { clearInterval(iv); resolve(); }
+      if (i >= spans.length) { clearInterval(iv); resolve(); }
     }, delay || 70);
   });
+}
+function epType(el, text, delay) {
+  epFill(el, text);
+  return epReveal(el, text, delay);
 }
 
 // ═══════════════════════════════════════════════
@@ -1469,15 +1482,13 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   scroll.style.opacity = '0';
   await new Promise(r => setTimeout(r, 1400));
 
-  // 2. コンテンツをセット・全要素を不可視に
-  logEl.textContent   = '[ END OF LOG: ]';
+  // 2. 高さを確保しつつ不可視に（epFillで透明span埋め → レイアウトずれ防止）
+  epFill(logEl, '[ END OF LOG: ]');
   logEl.style.transition = 'none'; logEl.style.opacity = '0';
   ruleEl.style.transition = 'none'; ruleEl.style.opacity = '0';
-  epnumEl.textContent = endNum + (endJp ? '  ' + endJp : '');
+  const epText = endNum + (endJp ? '  ' + endJp : '');
+  epFill(epnumEl, epText);
   epnumEl.style.transition = 'none'; epnumEl.style.opacity = '0';
-  nextEl.innerHTML = startNum && startJp
-    ? '[ NEXT EPISODE ' + startNum + ' ]<br><span style="font-family:\'DotGothic16\',monospace;font-size:16px;">' + startJp + '</span>'
-    : '[ NEXT EPISODE ]';
   nextEl.classList.remove('show');
   btnEl.classList.remove('show');
 
@@ -1489,10 +1500,10 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // 3. 暗転で間を置く（1.5s）
   await new Promise(r => setTimeout(r, 1500));
 
-  // 4. [ END OF LOG: ] をタイプライター表示
+  // 4. [ END OF LOG: ] をタイプライター表示（spanを1文字ずつ表示）
   logEl.style.transition = 'none';
   logEl.style.opacity = '0.85';
-  await epType(logEl, '[ END OF LOG: ]', 65);
+  await epReveal(logEl, '[ END OF LOG: ]', 65);
   await new Promise(r => setTimeout(r, 700));
 
   // 5. 区切り線
@@ -1500,26 +1511,30 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   ruleEl.style.opacity = '0.5';
   await new Promise(r => setTimeout(r, 800));
 
-  // 6. エピソードタイトルをタイプライター表示
+  // 6. エピソードタイトルをタイプライター表示（spanを1文字ずつ表示）
   epnumEl.style.transition = 'none';
   epnumEl.style.opacity = '1';
-  const epText = endNum + (endJp ? '  ' + endJp : '');
-  await epType(epnumEl, epText, 85);
+  await epReveal(epnumEl, epText, 85);
   await new Promise(r => setTimeout(r, 2800));
 
   // 7. NEXT EPISODE をタイプライター表示
+  // 先に全要素を透明spanで埋めて高さを確保してからreveal（レイアウトずれ防止）
   nextEl.style.transition = 'none';
   nextEl.style.opacity = '1';
   nextEl.innerHTML = '';
   if (startNum && startJp) {
+    const text1 = '[ NEXT EPISODE ' + startNum + ' ]';
     const line1 = document.createElement('span');
     nextEl.appendChild(line1);
-    await epType(line1, '[ NEXT EPISODE ' + startNum + ' ]', 65);
     nextEl.appendChild(document.createElement('br'));
     const line2 = document.createElement('span');
     line2.style.cssText = "font-family:'DotGothic16',monospace;font-size:16px;";
     nextEl.appendChild(line2);
-    await epType(line2, startJp, 90);
+    // 両行を先にfill（高さ確定）→ 順に reveal
+    epFill(line1, text1);
+    epFill(line2, startJp);
+    await epReveal(line1, text1, 65);
+    await epReveal(line2, startJp, 90);
   } else {
     nextEl.textContent = '[ NEXT EPISODE ]';
   }
@@ -1533,22 +1548,28 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // ローディング画面がフェードアウトし始める瞬間にエンドカードを片付ける
   bgmFadeTo('assets/room_bg.mp3');
   await showLoadingBar(() => {
-    // display:none で完全に消す（opacityだとtransitionが残って見えることがある）
-    card.style.display = 'none';
+    // エンドカードを完全に片付け（opacity/transition/pointerEventsも全リセット）
+    card.style.opacity    = '0';
+    card.style.transition = 'none';
+    card.style.pointerEvents = 'none';
+    card.style.display    = 'none';
     nextEl.classList.remove('show');
     nextEl.style.opacity = ''; nextEl.style.transition = ''; nextEl.innerHTML = '';
     btnEl.classList.remove('show');
     logEl.style.transition = ''; logEl.style.opacity = '';
     ruleEl.style.transition = ''; ruleEl.style.opacity = '';
     epnumEl.style.transition = ''; epnumEl.style.opacity = '';
-    T.clear();
+    // Tエンジンをフル初期化（タップ待ちなど残存状態を完全消去）
+    T.reset();
     scroll.style.transition = 'none';
-    scroll.style.opacity = '1';
+    scroll.style.opacity    = '1';
     Scene.clearText();
   });
-  // ローディング後にep-endを元のスタイルに戻す（次回用）
-  card.style.display = '';
-  card.style.opacity = '';
+  // ローディング後にep-endを安全にCSS状態へ戻す（フラッシュ防止）
+  // opacity:0(inline)のまま display を復元し、その後インラインをすべて除去
+  card.style.display    = '';   // flex に戻す（opacity:0 なので不可視）
+  card.style.transition = '';   // CSS transition を復元（opacity が同値0のためアニメなし）
+  card.style.opacity    = '';   // インライン除去 → CSS opacity:0（.show なし）
   card.style.pointerEvents = '';
 }
 
@@ -1738,7 +1759,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
     hideTitle();
     stopRain();
     T.clear(); Scene.clearText();
-    epilogue();
+    (async () => {
+      await epilogue();
+      // 遷移後の ep1 起動までテストできるようにする
+      if (EPISODES[1]) {
+        saveProgress(1);
+        await EPISODES[1]();
+      }
+      T.clear(); Scene.clearText();
+      stopBgm();
+      showTitle();
+    })();
   });
 
   // ▼ 開発用：タイトルを飛ばして切り替え演出を見る場合
