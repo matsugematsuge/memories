@@ -1563,10 +1563,11 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // 8. ボタンが押されるまで待機
   await new Promise(r => { btnEl.onclick = () => r(); });
 
-  // 9. BGMを次話用にフェード開始・ローディングバー表示
-  // ローディング画面がフェードアウトし始める瞬間にエンドカードを片付ける
-  bgmFadeTo('assets/room_bg.mp3');
+  // 9. 旧BGMをすぐにフェードアウト・ローディングバー表示
+  bgmFadeTo(null, 500);   // 旧BGMを500msで停止（fire-and-forget）
   await showLoadingBar(() => {
+    // ローディング画面が消え始める瞬間にroom_bgをフェードイン（次話BGM）
+    startBgm(500);
     // エンドカードを完全に片付け（opacity/transition/pointerEventsも全リセット）
     card.style.opacity    = '0';
     card.style.transition = 'none';
