@@ -1411,6 +1411,22 @@ function loadProgress(){
 }
 
 // ═══════════════════════════════════════════════
+// EP END CARD: タイプライター
+// ═══════════════════════════════════════════════
+function epType(el, text, delay) {
+  return new Promise(resolve => {
+    el.textContent = '';
+    let i = 0;
+    const iv = setInterval(() => {
+      el.textContent += text[i];
+      if (!' 　'.includes(text[i])) tick(820 + Math.random() * 160);
+      i++;
+      if (i >= text.length) { clearInterval(iv); resolve(); }
+    }, delay || 70);
+  });
+}
+
+// ═══════════════════════════════════════════════
 // LOADING BAR
 // ═══════════════════════════════════════════════
 function showLoadingBar() {
@@ -1472,23 +1488,41 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // 3. 暗転で間を置く（1.5s）
   await new Promise(r => setTimeout(r, 1500));
 
-  // 4. [ END OF LOG: ] をじんわり表示
-  logEl.style.transition = 'opacity 1.0s ease';
+  // 4. [ END OF LOG: ] をタイプライター表示
+  logEl.style.transition = 'none';
   logEl.style.opacity = '0.85';
-  await new Promise(r => setTimeout(r, 1800));
+  await epType(logEl, '[ END OF LOG: ]', 65);
+  await new Promise(r => setTimeout(r, 700));
 
   // 5. 区切り線
   ruleEl.style.transition = 'opacity 0.6s ease';
   ruleEl.style.opacity = '0.5';
-  await new Promise(r => setTimeout(r, 900));
+  await new Promise(r => setTimeout(r, 800));
 
-  // 6. エピソードタイトル
-  epnumEl.style.transition = 'opacity 1.0s ease';
+  // 6. エピソードタイトルをタイプライター表示
+  epnumEl.style.transition = 'none';
   epnumEl.style.opacity = '1';
-  await new Promise(r => setTimeout(r, 1800));
+  const epText = endNum + (endJp ? '  ' + endJp : '');
+  await epType(epnumEl, epText, 85);
+  await new Promise(r => setTimeout(r, 2800));
 
-  // 7. NEXT EPISODE とボタンを出現
-  nextEl.classList.add('show');
+  // 7. NEXT EPISODE をタイプライター表示
+  nextEl.style.transition = 'none';
+  nextEl.style.opacity = '1';
+  nextEl.innerHTML = '';
+  if (startNum && startJp) {
+    const line1 = document.createElement('span');
+    nextEl.appendChild(line1);
+    await epType(line1, '[ NEXT EPISODE ' + startNum + ' ]', 65);
+    nextEl.appendChild(document.createElement('br'));
+    const line2 = document.createElement('span');
+    line2.style.cssText = "font-family:'DotGothic16',monospace;font-size:16px;";
+    nextEl.appendChild(line2);
+    await epType(line2, startJp, 90);
+  } else {
+    nextEl.textContent = '[ NEXT EPISODE ]';
+  }
+  await new Promise(r => setTimeout(r, 400));
   btnEl.classList.add('show');
 
   // 8. ボタンが押されるまで待機
@@ -1504,6 +1538,7 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   card.style.pointerEvents = 'none';
   card.classList.remove('show');
   nextEl.classList.remove('show');
+  nextEl.style.opacity = ''; nextEl.style.transition = ''; nextEl.innerHTML = '';
   btnEl.classList.remove('show');
   logEl.style.transition = ''; logEl.style.opacity = '';
   ruleEl.style.transition = ''; ruleEl.style.opacity = '';
