@@ -905,6 +905,7 @@ const Scene = (() => {
   let scene = 'IDLE', frame = 0, smokes = [];
   let fkBright = 1, fkSeq = null, fkIdle = 0;
   let fadeFrom = null, fadeAlpha = 1;
+  let glowPhase = 0;
   const FADE_DUR = 75;
 
   function tickFlicker() {
@@ -962,6 +963,26 @@ const Scene = (() => {
       cx.fillStyle = `rgba(${g},${g+10},${g},${p.life*0.6})`;
       cx.fillRect(Math.floor(p.x - sz/2), Math.floor(p.y - sz/2), sz, sz);
     });
+  }
+
+  // 端末スクリーンのグロウエフェクト（scene_IDLE.png 右下CRT、192×128基準）
+  const GLOW_X=140, GLOW_Y=63, GLOW_W=36, GLOW_H=35;
+  function drawTerminalGlow() {
+    const pulse = 0.5 + 0.5 * Math.sin(glowPhase);
+    glowPhase += 0.015;  // ~7秒で1周期
+    cx.save();
+    cx.globalCompositeOperation = 'lighter';
+    // 外→内の順に重ねてソフトなブルームを作る
+    [
+      { s: 10, a: 0.018 + pulse * 0.012 },
+      { s:  6, a: 0.035 + pulse * 0.022 },
+      { s:  3, a: 0.055 + pulse * 0.030 },
+      { s:  0, a: 0.070 + pulse * 0.038 },
+    ].forEach(({ s, a }) => {
+      cx.fillStyle = `rgba(0,220,60,${a})`;
+      cx.fillRect(GLOW_X-s, GLOW_Y-s, GLOW_W+s*2, GLOW_H+s*2);
+    });
+    cx.restore();
   }
 
   // ── SCENES ──────────────────────────
@@ -1249,6 +1270,7 @@ const Scene = (() => {
     if (isShopScene(scene)) {
       if(frame%4===0) { smoke(58,101); if(Math.random()<0.5) smoke(58,101); }
       updSmoke(); drawSmoke();
+      if (scene === 'IDLE') drawTerminalGlow();
       tickFlicker();
       if (fkBright < 1) { cx.fillStyle=`rgba(0,0,0,${(1-fkBright)*0.88})`; cx.fillRect(0,0,W,H); }
     }
