@@ -13,13 +13,13 @@ async function ep1(){
   T.sp();
   await T.tap();
 
-  await Scene.load('CLIENT_ep0');
+  await Scene.load('CLIENT_ep1');
   for(let i=0;i<2;i++){ knock(); await T.sleep(i===0?0:750); }
   await T.sleep(300);
   await T.say('ノックは二回。ひどく、遠慮がちだった。','narr');
   await T.dlg('「開いてる」');
   T.sp();
-  Scene.set('CLIENT_ep0');
+  Scene.set('CLIENT_ep1');
   await T.sleep(400);
   await T.say('入ってきたのは年老いた男だった。七十は超えているだろう。','narr');
   await T.say('上等だが、流行を二十年は外したコート。手には古い革の鞄。','narr');
