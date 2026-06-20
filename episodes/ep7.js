@@ -1,5 +1,5 @@
 async function ep7(){
-  await T.say('深夜。三時を回った。', 'narr');
+  await T.say('深夜。十二時を回った。', 'narr');
   await T.say('煙が、端末の緑の光をくぐって、天井へ吸われていく。', 'narr');
   T.sp();
   await T.say('この街は、身体を金で買う。心臓も、肺も、目も、腕も。古びれば取り替える。', 'narr');
@@ -20,14 +20,14 @@ async function ep7(){
   Scene.set('CLIENT_ep0');
   await T.sleep(400);
   await T.say('入ってきたのは、五十がらみの女だった。', 'narr');
-  await T.say('身なりは質素だが、清潔だ。袖をきっちり折り返している。長く、人の身体に触れてきた手の畳み方だった。', 'narr');
+  await T.say('身なりは質素だが、清潔だ。袖をきっちり折り返している。', 'narr');
   await T.say('指が、長い。器用そうな指だ。だが、その指先が、本人の意思とは無関係に、細かく震えていた。', 'narr');
   T.sp();
   await T.dlg('「座ってくれ。料金は前払い。作業が始まれば、取り消しはきかない」');
-  await T.dlg('「お喋りは、手短に」');
+  await T.dlg('「余計なお喋りは、手短に頼む」');
   T.sp();
-  await T.say('女は、軋む椅子に、背筋を伸ばして腰かけた。膝の上で、震える両手を、もう片方の手で押さえこんだ。', 'narr');
-  await T.npc('「わたしは、下層で医者をしている」');
+  await T.say('女は、背筋を伸ばして腰かけた。膝の上で、震える両手を、もう片方の手で押さえこんだ。', 'narr');
+  await T.npc('「わたしは、下層で、もぐりの医者をしている」');
   T.sp();
   await T.tap();
 
@@ -50,7 +50,7 @@ async function ep7(){
   T.sp();
   await T.tap();
 
-  await T.dlg('「で。何が起きてる」');
+  await T.dlg('「で、何が起きてる」');
   await T.say('女は、押さえていた手を、そっと離した。', 'narr');
   await T.say('指先が、はっきりと震えていた。', 'narr');
   T.sp();
@@ -61,7 +61,7 @@ async function ep7(){
   await T.npc('「先週、運ばれてきた若い男を、助けられなかった。本当なら、きっと助かる傷だった。わたしの手さえ、震えていなければ」');
   await T.npc('「その男の顔も、また、ここに増えた。――きりがない」');
   T.sp();
-  await T.say('女は、自分の手のひらを、長いこと見つめていた。', 'narr');
+  await T.say('女は、自分の震える手のひらを、長いこと見つめていた。', 'narr');
   T.sp();
   await T.npc('「だから、消してほしい。これまで死なせた患者の記憶を、全部」');
   await T.npc('「死んだ人間は、もう、わたしには治せない。なのに、その死人たちが、生きている患者を、わたしに殺させる」');
@@ -88,13 +88,13 @@ async function ep7(){
 
   await mlog('...運び込まれた、名前も知らない男。');
   await mlog('...血が足りなかった。下層には、血も足りない。');
-  await mlog('...工場で潰された腕の若者。麻酔が、切れていた。');
+  await mlog('...工場で腕が潰された若者。麻酔が、切れていた。');
   await mlog('...最後まで、痛い、とは言わなかった。それが、つらかった。');
   await mlog('...冷たくなった子供を、母親に返した。');
   await mlog('...「先生のせいじゃない」と、誰かが言った。');
   await mlog('...そう言われるたびに、わたしのせいになっていく。');
   await mlog('...咳の止まらない老人。薬さえあれば、助かった。薬が、なかった。');
-  await mlog('...「ここまで診てもらえて、御の字だ」と、笑って逝った。');
+  await mlog('...「ここまで診てもらえて、それだけで御の字だ」と、笑って逝った。');
   await mlog('...死に顔は、消えない。礼を言われた顔より、ずっと、鮮明に。');
 
   await T.sleep(300);
@@ -116,8 +116,8 @@ async function ep7(){
   await T.sleep(300);
 
   await T.say('そういうことか。', 'narr');
-  await T.say('何百人の死人。その、いちばん奥に、たった一人。色が違う。', 'narr');
-  await T.say('この女は、最初の一人に、医者にされた。そして今、その一人に、医者をやめさせられかけている。', 'narr');
+  await T.say('何百人の死人。その、いちばん奥に、たった一人。', 'narr');
+  await T.say('この女は、最初の一人に、医者にされた。そして今、その一人に、医者をやめさせられかけているのだ。', 'narr');
   T.sp();
   await T.tap();
 
@@ -152,7 +152,7 @@ async function ep7(){
   T.sp();
   await T.tap();
 
-  const ch = await showChoices('[ 消す ]', '[ 背負う ]');
+  const ch = await showChoices('[ ERASE ]', '[ KEEP ]');
   T.sp();
   if(ch==='ERASE') await ep7EraseEnd();
   else             await ep7KeepEnd();

@@ -225,7 +225,7 @@ async function ep9Epilogue(){
   await T.say('婆さんの頭にはなかった、この穴が。俺には、ある。', 'narr');
   await T.say('……指が、動かなかった。', 'narr');
   T.sp();
-  await T.say('緑の光が瞬く。手は、ポートの手前で止まったまま、しばらく動かなかった。','narr');
+  await T.say('手は、ポートの手前で止まったままだ。','narr');
   T.sp();
   await episodeTransition(
     '[ END OF LOG: EP.9  THE TOBACCO SHOP ]', '煙草屋の婆さん',

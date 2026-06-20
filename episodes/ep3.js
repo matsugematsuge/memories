@@ -13,7 +13,6 @@ async function ep3(){
   await T.say('反吐の出る商売だ。――だが、俺はこれで、食っている。', 'narr');
   T.sp();
   await T.say('棚のほうから、かすかに埃の匂いがした。','narr');
-  await T.say('今夜は、消しに来る客じゃない。そんな気が、していた。', 'narr');
   T.sp();
   await T.tap();
 

@@ -295,7 +295,7 @@ async function ep8Epilogue(){
   T.sp();
   await T.say('……らしくない。俺は、頭を振った。', 'narr');
   T.sp();
-  await T.say('端末の緑の光が、静かに瞬いている。誰が組んだかも知らない手で、また、次の客を待つ。', 'narr');
+  await T.say('俺は、誰が組んだかも知らない手で、また、次の客を待つ。', 'narr');
   T.sp();
   await episodeTransition(
     '[ END OF LOG: EP.8  THE GIFT ]', '贈りもの',
