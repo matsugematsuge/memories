@@ -1377,7 +1377,7 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   document.getElementById('ep-end-log').textContent   = '[ END OF LOG: ]';
   document.getElementById('ep-end-epnum').textContent = endNum + (endJp ? '  ' + endJp : '');
   nextEl.innerHTML = startNum && startJp
-    ? '[ NEXT EPISODE<br>' + startNum + '&nbsp;&nbsp;<span style="font-family:\'DotGothic16\',monospace;font-size:14px;">' + startJp + '</span> ]'
+    ? '[ NEXT EPISODE ' + startNum + ' ]<br><span style="font-family:\'DotGothic16\',monospace;font-size:16px;">' + startJp + '</span>'
     : '[ NEXT EPISODE ]';
   nextEl.classList.remove('show');
   btnEl.classList.remove('show');
