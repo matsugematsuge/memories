@@ -544,6 +544,22 @@ body {
   text-shadow: none;
   box-shadow: none;
 }
+#dev-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #1a2e1a;
+  background: none;
+  border: 1px solid #0d1a0d;
+  padding: 4px 7px;
+  cursor: pointer;
+  z-index: 2;
+  letter-spacing: 0;
+}
+#dev-btn:hover { color: var(--mid); border-color: #1e3020; }
+
 #ep-select {
   display: none;
   flex-direction: column;
@@ -636,6 +652,7 @@ body {
   <div id="title-screen">
     <div id="title-bg"></div>
     <canvas id="rain-cvs"></canvas>
+    <button id="dev-btn">[ DEV: EP0 EPILOGUE ]</button>
     <div id="title-content">
       <div id="title-logo">MEMORIES</div>
       <div id="title-tap">--- TAP ---</div>
@@ -1679,6 +1696,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   document.getElementById('btn-bgm').addEventListener('click', e => { e.stopPropagation(); bootAudio(); toggleBgm(); });
   document.getElementById('btn-se').addEventListener('click',  e => { e.stopPropagation(); bootAudio(); toggleSe(); });
+
+  document.getElementById('dev-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    bootAudio();
+    hideTitle();
+    stopRain();
+    T.clear(); Scene.clearText();
+    epilogue();
+  });
 
   // ▼ 開発用：タイトルを飛ばして切り替え演出を見る場合
   // hideTitle(); (async()=>{ T.clear(); Scene.clearText(); Scene.set('IDLE'); await epilogue(); await ep1(); })();
