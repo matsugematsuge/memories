@@ -345,7 +345,7 @@ body {
 }
 #ep-end-log {
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
+  font-size: 12px;
   color: var(--amber);
   letter-spacing: 1px;
   margin-bottom: 32px;
@@ -369,7 +369,7 @@ body {
 }
 #ep-end-next {
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
+  font-size: 12px;
   color: var(--amber);
   letter-spacing: 1px;
   opacity: 0;
@@ -381,7 +381,7 @@ body {
 #ep-end-next.show { opacity: 0.8; }
 #ep-end-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
+  font-size: 19px;
   color: var(--green);
   border: 1px solid var(--mid);
   background: transparent;
@@ -1376,8 +1376,8 @@ async function episodeTransition(endLabel, endJp, startLabel, startJp) {
   // 内容をセット（next・btnは初期非表示）
   document.getElementById('ep-end-log').textContent   = '[ END OF LOG: ]';
   document.getElementById('ep-end-epnum').textContent = endNum + (endJp ? '  ' + endJp : '');
-  nextEl.textContent = startNum && startJp
-    ? '[ NEXT EPISODE : ' + startNum + ' : ' + startJp + ' ]'
+  nextEl.innerHTML = startNum && startJp
+    ? '[ NEXT EPISODE<br>' + startNum + '&nbsp;&nbsp;<span style="font-family:\'DotGothic16\',monospace;font-size:14px;">' + startJp + '</span> ]'
     : '[ NEXT EPISODE ]';
   nextEl.classList.remove('show');
   btnEl.classList.remove('show');
